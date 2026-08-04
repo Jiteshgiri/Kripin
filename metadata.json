@@ -1,0 +1,8 @@
+{
+  "name": "Kripin",
+  "description": "Kripin is a smart expense tracker to manage income, expenses, balances and generate PDF reports.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "Created by Jitesh | Powered by JTech Labs"
+  ]
+}
