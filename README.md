@@ -21,6 +21,12 @@ Manage your income, expenses, budgets and financial reports with a modern, secur
 
 ---
 
+# 🌐 Live Demo
+
+Experience Kripin directly in your browser.
+
+👉 **Live Website:** https://kripin.vercel.app 
+
 # 📖 About Kripin
 
 Kripin is a modern Personal Expense Tracker developed to help individuals manage their daily finances in a simple, secure and efficient way.
