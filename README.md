@@ -20,6 +20,11 @@ Manage your income, expenses, budgets and financial reports with a modern, secur
 </div>
 
 ---
+# 🌐 Live Demo
+
+Experience Kripin directly in your browser.
+
+👉 **Live Website:** https://kripin.vercel.app
 
 # 🌐 Live Demo
 
