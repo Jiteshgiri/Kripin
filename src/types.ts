@@ -37,6 +37,9 @@ export interface BudgetConfig {
   monthlyIncome: number;
   monthlyBudget: number;
   userRole: 'Student' | 'Working Professional';
+
+  // Category-wise Monthly Budget
+  categoryBudgets: CategoryBudgets;
 }
 
 export interface UserProfile {

@@ -33,7 +33,8 @@ export function buildMonthlyPdfDoc(
   netBalance: number,
   transactions: PdfTransactionItem[],
   customCategorySummary?: CategorySummaryItem[],
-  userProfile?: UserProfile
+  userProfile?: UserProfile,
+  budgetSummary?: BudgetSummaryPdfItem[]
 ): jsPDF {
   const doc = new jsPDF();
 
@@ -463,14 +464,15 @@ export function generateMonthlyPdf(
   budgetSummary?: BudgetSummaryPdfItem[]
 ) {
   const doc = buildMonthlyPdfDoc(
-    monthLabel,
-    totalIncome,
-    totalExpense,
-    netBalance,
-    transactions,
-    customCategorySummary,
-    userProfile
-  );
+  monthLabel,
+  totalIncome,
+  totalExpense,
+  netBalance,
+  transactions,
+  customCategorySummary,
+  userProfile,
+  budgetSummary
+);
 
   doc.save(`Kripin_Report_${monthLabel.replace(/[\s,]+/g, "_")}.pdf`);
 }

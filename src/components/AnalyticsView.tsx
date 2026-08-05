@@ -158,15 +158,15 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
     }));
 
     const doc = buildMonthlyPdfDoc(
-      selectedMonthLabel,
-      totalInc,
-      totalExp,
-      totalInc - totalExp,
-      pdfTxs,
-      categorySummary,
-      budgetPdfItems
-
-    );
+  selectedMonthLabel,
+  totalInc,
+  totalExp,
+  totalInc - totalExp,
+  pdfTxs,
+  categorySummary,
+  userProfile,
+  budgetPdfItems
+);
 
     setPreviewPdfState({
       isOpen: true,
