@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/Jiteshgiri/Kripin/main/public/Kripin.png" width="120" alt="Kripin Logo"/>
+<img src="./assets/logo.png" width="120" alt="Kripin Logo"/>
 
 # 💰 Kripin
 
