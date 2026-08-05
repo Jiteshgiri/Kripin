@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { PieChart, Download, Lightbulb, Sparkles, Target, AlertCircle } from 'lucide-react';
+import { PieChart, Download, Lightbulb, Sparkles } from 'lucide-react';
 import jsPDF from 'jspdf';
-import { Expense, CATEGORIES, UserProfile, BudgetConfig, DEFAULT_CATEGORY_BUDGETS } from '../types';
-import { buildMonthlyPdfDoc, PdfTransactionItem, BudgetSummaryPdfItem } from '../utils/pdfGenerator';
-import { calculateCategoryStatuses } from '../utils/budgetUtils';
+import { Expense, CATEGORIES, UserProfile, BudgetConfig } from '../types';
+import { buildMonthlyPdfDoc, PdfTransactionItem } from '../utils/pdfGenerator';
 import { ColorfulMonthPicker } from './ColorfulMonthPicker';
 import { PdfPreviewModal } from './PdfPreviewModal';
 
@@ -84,20 +83,6 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
     };
   });
 
-  // Calculate Category Budget Statuses
-  const categoryStatuses = calculateCategoryStatuses(
-    categoryMap,
-    budgetConfig?.categoryBudgets || DEFAULT_CATEGORY_BUDGETS
-  );
-
-  const budgetPdfItems: BudgetSummaryPdfItem[] = categoryStatuses.map((st) => ({
-    category: st.categoryName,
-    budget: st.budgetAmount,
-    spent: st.spentAmount,
-    remaining: st.remainingAmount,
-    status: st.status,
-  }));
-
   // PDF Preview Modal State
   const [previewPdfState, setPreviewPdfState] = useState<{
     isOpen: boolean;
@@ -164,8 +149,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
   totalInc - totalExp,
   pdfTxs,
   categorySummary,
-  userProfile,
-  budgetPdfItems
+  userProfile
 );
 
     setPreviewPdfState({
@@ -343,77 +327,6 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
             ))}
           </div>
         )}
-      </div>
-
-       {/* Budget vs Actual Spending Comparison Section */}
-      <div
-        className={`rounded-2xl p-4 sm:p-5 border shadow-xs space-y-4 ${
-          isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
-        }`}
-      >
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <Target className="w-4 h-4 text-emerald-500" />
-            <h3 className={`text-xs font-bold uppercase tracking-wider ${
-              isDarkMode ? 'text-slate-300' : 'text-slate-700'
-            }`}>
-              Budget vs. Actual Spending ({selectedMonthLabel.split(' ')[0]})
-            </h3>
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          {categoryStatuses.map((st) => {
-            return (
-              <div
-                key={st.catId}
-                className={`p-3 rounded-xl border ${
-                  isDarkMode ? 'bg-slate-950/50 border-slate-800/80' : 'bg-slate-50 border-slate-200/80'
-                }`}
-              >
-                <div className="flex items-center justify-between text-xs font-bold mb-1.5">
-                  <span className="flex items-center gap-1.5">
-                    <span className="text-base">{st.iconEmoji}</span>
-                    <span className={isDarkMode ? 'text-slate-200' : 'text-slate-800'}>{st.categoryName}</span>
-                  </span>
-
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-extrabold border ${st.statusColorClass}`}>
-                    {st.usagePercent}% • {st.status}
-                  </span>
-                </div>
-
-                {/* Side-by-side Progress comparison bar */}
-                <div className="w-full h-2.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden mb-2">
-                  <div
-                    className={`h-full rounded-full transition-all duration-500 ${st.barColorClass}`}
-                    style={{ width: `${Math.min(100, st.usagePercent)}%` }}
-                  />
-                </div>
-
-                <div className="flex items-center justify-between text-[11px] font-medium">
-                  <span className={isDarkMode ? 'text-slate-400' : 'text-slate-600'}>
-                    Spent: <strong className={st.usagePercent >= 100 ? 'text-red-500' : isDarkMode ? 'text-slate-200' : 'text-slate-800'}>₹{st.spentAmount.toLocaleString('en-IN')}</strong> / Budget: ₹{st.budgetAmount.toLocaleString('en-IN')}
-                  </span>
-                  <span className={st.usagePercent >= 100 ? 'text-red-500 font-bold' : isDarkMode ? 'text-slate-400' : 'text-slate-500'}>
-                    {st.usagePercent >= 100
-                      ? `Exceeded +₹${(st.spentAmount - st.budgetAmount).toLocaleString('en-IN')}`
-                      : `Remaining ₹${st.remainingAmount.toLocaleString('en-IN')}`}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-
-          {categoryStatuses.length === 0 && (
-            <div
-              className={`py-6 text-center text-xs font-medium border border-dashed rounded-xl ${
-                isDarkMode ? 'border-slate-800 text-slate-500' : 'border-slate-200 text-slate-400'
-              }`}
-            >
-              No category budget limits configured.
-            </div>
-          )}
-        </div>
       </div>
 
       {/* PDF Statement Preview Modal */}

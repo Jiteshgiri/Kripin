@@ -12,18 +12,11 @@ import {
   X,
   MessageSquare,
   Pencil,
-  Target,
-  AlertTriangle,
-  SlidersHorizontal,
-  PieChart as PieChartIcon,
-  ChevronDown,
-  ChevronUp,
-  Eye,
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import { Expense, SmsAlert, CATEGORIES, UserProfile, BudgetConfig, DEFAULT_CATEGORY_BUDGETS } from '../types';
-import { buildMonthlyPdfDoc, PdfTransactionItem, BudgetSummaryPdfItem } from '../utils/pdfGenerator';
-import { calculateCategoryStatuses, generateBudgetAlerts, getBudgetColorClasses } from '../utils/budgetUtils';
+import { buildMonthlyPdfDoc, PdfTransactionItem } from '../utils/pdfGenerator';
+import { calculateCategoryStatuses } from '../utils/budgetUtils';
 import { ColorfulMonthPicker } from './ColorfulMonthPicker';
 import { PdfPreviewModal } from './PdfPreviewModal';
 
@@ -63,9 +56,6 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
   });
-
-  // Collapsible Total Monthly Allocation state
-  const [isAllocationOpen, setIsAllocationOpen] = useState(false);
 
   // Calculate Running Balance across all transactions in chronological order (oldest to newest)
   const sortedAllTransactions = [...expenses].sort((a, b) => {
@@ -146,24 +136,6 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
     budgetConfig.categoryBudgets || DEFAULT_CATEGORY_BUDGETS
   );
 
-  const budgetAlerts = generateBudgetAlerts(categoryStatuses);
-
-  // Total Monthly Category Allocation Cap
-  const totalCategoryBudget = categoryStatuses.reduce((sum, st) => sum + st.budgetAmount, 0);
-  const totalCategorySpent = totalMonthlyExpense;
-  const overallRemainingBudget = Math.max(0, totalCategoryBudget - totalCategorySpent);
-  const overallUsagePercent = totalCategoryBudget > 0 ? Math.round((totalCategorySpent / totalCategoryBudget) * 100) : 0;
-  const overallColors = getBudgetColorClasses(overallUsagePercent);
-
-  // Budget summary list for PDF export
-  const budgetPdfItems: BudgetSummaryPdfItem[] = categoryStatuses.map((st) => ({
-    category: st.categoryName,
-    budget: st.budgetAmount,
-    spent: st.spentAmount,
-    remaining: st.remainingAmount,
-    status: st.status,
-  }));
-
   // Total balance overall across all history
   const overallTotalBalance = cumulativeBalance;
 
@@ -210,8 +182,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
       totalMonthlyIncome - totalMonthlyExpense,
       pdfItems,
       undefined,
-      userProfile,
-      budgetPdfItems
+      userProfile
     );
 
     setPreviewPdfState({
@@ -293,27 +264,6 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
             </span>
           </div>
         </div>
-        {/* Dedicated Toggle Button under Current Balance for Total Monthly Allocation */}
-        <button
-          type="button"
-          onClick={() => setIsAllocationOpen((prev) => !prev)}
-          className={`w-full mt-3.5 py-2.5 px-3.5 rounded-xl border text-xs font-bold flex items-center justify-between transition-all active:scale-[0.99] ${
-            isAllocationOpen
-              ? 'bg-emerald-500 text-white border-emerald-500 shadow-xs'
-              : isDarkMode
-              ? 'bg-slate-800/80 hover:bg-slate-800 border-slate-700/80 text-emerald-400'
-              : 'bg-emerald-50 hover:bg-emerald-100/80 border-emerald-200/80 text-emerald-700'
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            <Target className="w-4 h-4 shrink-0" />
-            <span>Total Monthly Allocation</span>
-          </div>
-          <div className="flex items-center gap-1.5 font-extrabold">
-            <span>₹{totalCategoryBudget.toLocaleString('en-IN')}</span>
-            {isAllocationOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-          </div>
-        </button>
       </div>
 
       {/* 2. 1-Click PDF Report Export & Quick Action Bar */}
@@ -326,207 +276,19 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
           <Download className="w-4 h-4" />
           <span>Download {selectedMonthLabel.split(' ')[0]} PDF</span>
         </button>
-
-        <button
-          onClick={onOpenQuickAdd}
-          className={`flex items-center justify-center gap-1.5 py-3 px-4 font-bold text-xs rounded-xl border transition-all active:scale-95 shrink-0 ${
-            isDarkMode
-              ? 'bg-slate-800 hover:bg-slate-700 text-white border-slate-700'
-              : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-200'
-          }`}
-        >
-          <Plus className="w-4 h-4 stroke-[2.5]" />
-          <span>Add Entry</span>
-        </button>
       </div>
-      <div className={`rounded-2xl border shadow-sm overflow-hidden ${ isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"}`}>
-        
-        {/* 2B. OVERALL MONTHLY BUDGET & ALLOCATION SECTION (VISIBLE ONLY WHEN CLICKED) */}
-      {isAllocationOpen && (
-        <div
-          className={`rounded-2xl border shadow-sm transition-all overflow-hidden p-4 space-y-4 animate-in slide-in-from-top-2 duration-200 ${
-            isDarkMode ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-800'
-          }`}
+      
+      <button 
+      onClick={onOpenQuickAdd}
+      className={`flex items-center justify-center gap-1.5 py-3 px-4 font-bold text-xs rounded-xl border transition-all active:scale-95 shrink-0 ${
+        isDarkMode
+        ? 'bg-slate-900 border-slate-700 text-white hover:bg-slate-800'
+        : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-50'
+        }`}
         >
-
-      {/* Header Bar */}
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center font-bold shrink-0">
-                <Target className="w-5 h-5" />
-              </div>
-              <div className="min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="text-xs font-bold uppercase tracking-wider">Total Monthly Allocation Details</h3>
-                  <span className="text-[10px] font-extrabold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                    ₹{totalCategoryBudget.toLocaleString('en-IN')}
-                  </span>
-              </div>
-              <p className={`text-[11px] truncate ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-                Spent ₹{totalCategorySpent.toLocaleString('en-IN')} • {selectedMonthLabel}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-1.5 shrink-0">
-            <button
-            onClick={onOpenBudgetSettings}
-            className={`px-3 py-1.5 rounded-xl border text-xs font-bold flex items-center gap-1 transition-colors ${
-                  isDarkMode
-                    ? 'bg-slate-800 hover:bg-slate-700 border-slate-700 text-slate-300 hover:text-white'
-                    : 'bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700'
-                }`}
-              >
-                <SlidersHorizontal className="w-3.5 h-3.5" />
-                <span>Edit Settings</span>
-              </button>
-
-              <button
-                onClick={() => setIsAllocationOpen(false)}
-                className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 transition-colors"
-                title="Close Allocation View"
-              >
-                <ChevronUp className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-          
-         {/* Overall Progress Stats */}
-            <div className="grid grid-cols-3 gap-2 py-2 text-center border-y border-slate-200/20 dark:border-slate-800/80">
-            <div>
-            <span className={`text-[10px] font-bold uppercase block ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-              Budget Limit
-            </span>
-            <span className="text-sm sm:text-base font-extrabold text-emerald-600 dark:text-emerald-400">
-              ₹{totalCategoryBudget.toLocaleString('en-IN')}
-            </span>
-          </div>
-          <div>
-            <span className={`text-[10px] font-bold uppercase block ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-              Total Spent
-            </span>
-            <span className="text-sm sm:text-base font-extrabold text-red-600 dark:text-red-400">
-              ₹{totalCategorySpent.toLocaleString('en-IN')}
-            </span>
-          </div>
-
-          <div>
-            <span className={`text-[10px] font-bold uppercase block ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-              Remaining
-            </span>
-            <span className={`text-sm sm:text-base font-extrabold ${overallColors.text}`}>
-              ₹{overallRemainingBudget.toLocaleString('en-IN')}
-            </span>
-          </div>
-        </div>
-
-        {/* Overall Progress Bar */}
-        <div>
-          <div className="flex items-center justify-between text-xs font-bold mb-1.5">
-            <span className={isDarkMode ? 'text-slate-300' : 'text-slate-700'}>Overall Spending Progress</span>
-            <span className={`px-2 py-0.5 rounded-md text-[10px] font-extrabold border ${overallColors.badge}`}>
-              {overallUsagePercent}% • {overallColors.statusText}
-            </span>
-          </div>
-          <div className="w-full h-3 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden relative">
-            <div
-              className={`h-full rounded-full transition-all duration-500 ${overallColors.bar}`}
-              style={{ width: `${Math.min(100, overallUsagePercent)}%` }}
-            />
-          </div>
-        </div>
-
-        {/* Category Monthly Budgets Breakdown */}
-            <div className="space-y-2.5 pt-2 border-t border-slate-200/20 dark:border-slate-800/80">
-              <div className="flex items-center justify-between">
-                <h4 className={`text-xs font-bold uppercase tracking-wider ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
-                  Category Monthly Breakdown
-                </h4>
-                <button
-                  onClick={onOpenBudgetSettings}
-                  className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline"
-                >
-                  Configure Limits
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                {categoryStatuses.map((st) => (
-                  <div
-                    key={st.catId}
-                    className={`p-3 rounded-xl border ${
-                      isDarkMode ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-2 mb-1.5">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <span className="text-base shrink-0">{st.iconEmoji}</span>
-                        <span className="text-xs font-bold truncate leading-tight">{st.categoryName}</span>
-                      </div>
-                      <span className={`px-1.5 py-0.5 rounded text-[10px] font-extrabold border ${st.statusColorClass}`}>
-                        {st.usagePercent}%
-                      </span>
-                    </div>
-
-                    <div className="w-full h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden mb-1.5">
-                      <div
-                        className={`h-full rounded-full transition-all duration-300 ${st.barColorClass}`}
-                        style={{ width: `${Math.min(100, st.usagePercent)}%` }}
-                      />
-                    </div>
-
-                    <div className="flex items-center justify-between text-[10px] font-medium">
-                      <span className={isDarkMode ? 'text-slate-400' : 'text-slate-600'}>
-                        Spent: ₹{st.spentAmount.toLocaleString('en-IN')} / ₹{st.budgetAmount.toLocaleString('en-IN')}
-                      </span>
-                      <span className={st.usagePercent >= 100 ? 'text-red-500 font-bold' : isDarkMode ? 'text-slate-400' : 'text-slate-500'}>
-                        {st.usagePercent >= 100 ? 'Exceeded' : `Remaining ₹${st.remainingAmount.toLocaleString('en-IN')}`}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-
-                {categoryStatuses.length === 0 && (
-                  <div className="col-span-full py-4 text-center text-xs text-slate-500 border border-dashed rounded-xl">
-                    No active category limits set.
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
-      {/* 2C. CRITICAL / WARNING BUDGET ALERT BANNERS */}
-
-      {budgetAlerts.length > 0 && (
-        <div className="space-y-2">
-          {budgetAlerts.map((alt) => (
-            <div
-              key={alt.id}
-              className={`p-3.5 rounded-2xl border flex items-start gap-3 shadow-xs animate-in slide-in-from-top-1 duration-200 ${
-                alt.type === 'exceeded'
-                  ? 'bg-red-500/10 border-red-500/30 text-red-500'
-                  : alt.type === 'critical'
-                  ? 'bg-red-500/10 border-red-500/20 text-red-400'
-                  : 'bg-amber-500/10 border-amber-500/20 text-amber-500'
-              }`}
-            >
-              <div className="w-8 h-8 rounded-xl bg-white/10 flex items-center justify-center text-lg shrink-0">
-                {alt.iconEmoji}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2">
-                  <h4 className="text-xs font-bold leading-tight">{alt.title}</h4>
-                  <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-black/20">
-                    {alt.percent}%
-                  </span>
-                </div>
-                <p className="text-xs mt-0.5 opacity-90 leading-snug">{alt.message}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+          <Plus className="w-4 h-4" />
+          <span>Add</span>
+          </button>
 
       {/* SMS Bank Alerts Banner if any */}
       {unconfirmedSmsAlerts.length > 0 && (
@@ -719,7 +481,6 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
             })}
           </div>
         )}
-      </div>
       </div>
 
 {/* PDF Statement Preview Modal */}
