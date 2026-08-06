@@ -1,8 +1,6 @@
 <div align="center">
 
-<img src="./assets/logo.png" width="120" alt="Kripin Logo"/>
-
-# 💰 Kripin
+# Kripin
 
 ### Smart Personal Expense Tracker
 
@@ -20,11 +18,6 @@ Manage your income, expenses, budgets and financial reports with a modern, secur
 </div>
 
 ---
-# 🌐 Live Demo
-
-Experience Kripin directly in your browser.
-
-👉 **Live Website:** https://kripin.vercel.app
 
 # 🌐 Live Demo
 
@@ -32,7 +25,7 @@ Experience Kripin directly in your browser.
 
 👉 **Live Website:** https://kripin.vercel.app 
 
-# 📖 About Kripin
+# About Kripin
 
 Kripin is a modern Personal Expense Tracker developed to help individuals manage their daily finances in a simple, secure and efficient way.
 
@@ -42,15 +35,15 @@ Kripin is designed with a clean user interface, PIN-based security, Progressive 
 
 ---
 
-# 🎯 Vision
+# Vision
 
 To simplify personal finance management by providing users with an intelligent, secure and user-friendly expense tracking solution that encourages better financial habits and smarter decision making.
 
 ---
 
-# ✨ Features
+# Features
 
-## 💰 Expense Management
+## Expense Management
 
 - Add Income
 - Add Expenses
@@ -61,7 +54,7 @@ To simplify personal finance management by providing users with an intelligent, 
 
 ---
 
-## 📊 Dashboard
+## Dashboard
 
 - Total Balance
 - Total Income
@@ -72,7 +65,7 @@ To simplify personal finance management by providing users with an intelligent, 
 
 ---
 
-## 📈 Analytics
+## Analytics
 
 - Category-wise Expense Analysis
 - Monthly Spending Charts
@@ -82,7 +75,7 @@ To simplify personal finance management by providing users with an intelligent, 
 
 ---
 
-## 🎯 Budget Management
+## Budget Management
 
 - Monthly Budget
 - Category Budget Limits
@@ -93,7 +86,7 @@ To simplify personal finance management by providing users with an intelligent, 
 
 ---
 
-## 📄 Professional PDF Reports
+## Professional PDF Reports
 
 Generate professional monthly financial reports including:
 
@@ -106,7 +99,7 @@ Generate professional monthly financial reports including:
 
 ---
 
-## 🔒 Security
+## Security
 
 - 4 Digit PIN Protection
 - Secure Access Screen
@@ -115,7 +108,7 @@ Generate professional monthly financial reports including:
 
 ---
 
-## 🔔 Smart Features
+## Smart Features
 
 - Recurring Bills
 - Bill Reminders
@@ -126,7 +119,7 @@ Generate professional monthly financial reports including:
 
 ---
 
-## 📱 Progressive Web App
+## Progressive Web App
 
 - Installable App
 - Mobile Friendly
@@ -136,22 +129,7 @@ Generate professional monthly financial reports including:
 
 ---
 
-# 🚀 Upcoming Features
-
-- 🤖 AI Smart Financial Assistant
-- ☁ Cloud Backup & Restore
-- 🔄 Multi Device Sync
-- 💳 Bank SMS Auto Detection
-- 📈 Smart Spending Insights
-- 👥 Split Expenses
-- 📅 EMI & Bill Reminder System
-- 🔍 Advanced Search & Filters
-- 🌍 Multi Language Support
-- 🌙 Enhanced Dark Mode
-
----
-
-# 🛠 Technology Stack
+# Technology Stack
 
 | Technology | Purpose |
 |------------|---------|
@@ -166,7 +144,7 @@ Generate professional monthly financial reports including:
 
 ---
 
-# 📂 Project Structure
+# Project Structure
 
 ```text
 Kripin
@@ -188,7 +166,7 @@ Kripin
 
 ---
 
-# ⚙ Installation
+# Installation
 
 ## Clone Repository
 
@@ -222,21 +200,7 @@ npm run build
 
 ---
 
-# 📸 Screenshots
-
-> Screenshots will be added in future updates.
-
----
-
-# 🏢 About JTech Labs
-
-JTech Labs is focused on developing modern, secure and innovative software solutions that simplify everyday life.
-
-Our mission is to create high-quality digital products with excellent user experience, performance and reliability.
-
----
-
-# 👨‍💻 Developer
+# Developer
 
 ## Jitesh Giri
 
@@ -250,15 +214,7 @@ https://github.com/Jiteshgiri
 
 ---
 
-# 🤝 Contributing
-
-This repository is currently maintained by JTech Labs.
-
-Contributions, feature suggestions and bug reports are always welcome.
-
----
-
-# 📄 License
+# License
 
 Copyright © 2026 **JTech Labs**
 
@@ -270,21 +226,13 @@ Unauthorized copying, redistribution, modification or commercial use of this sof
 
 ---
 
-# ⭐ Support
-
-If you like this project, consider giving it a ⭐ on GitHub.
-
-Your support motivates future improvements.
-
----
-
 <div align="center">
 
-# 💚 Kripin
+# Kripin
 
 ### Smart Personal Expense Tracker
 
-Designed & Developed with ❤️ by **Jitesh Giri**
+Designed & Developed with by **Jitesh Giri**
 
 Powered by **JTech Labs**
 
