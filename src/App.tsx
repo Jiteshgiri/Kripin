@@ -223,15 +223,13 @@ export default function App() {
   const handleDeleteRecurringBill = (id: string) => {
   setRecurringBills((prev) => prev.filter((b) => b.id !== id));
 };
-if (!isUnlocked) {
-  return (
-  <PinLock onUnlock={() => setIsUnlocked(true)} />
-);
-}
 
   if (!isUnlocked) {
   return (
-    <PinLock onUnlock={() => setIsUnlocked(true)} />
+    <PinLock
+  onUnlock={() => setIsUnlocked(true)}
+  isDarkMode={isDarkMode}
+/>
   );
 }
 
