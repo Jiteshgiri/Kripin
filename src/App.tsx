@@ -237,7 +237,10 @@ if (!isUnlocked) {
 
 if (isAboutOpen) {
   return (
-    <AboutKripin onBack={() => setIsAboutOpen(false)} />
+    <AboutKripin
+  onBack={() => setIsAboutOpen(false)} 
+  isDarkMode={isDarkMode}
+/>
   );
 }
 
