@@ -6,6 +6,7 @@ import { HomeDashboard } from './components/HomeDashboard';
 import { AnalyticsView } from './components/AnalyticsView';
 import { RecurringBillsView } from './components/RecurringBillsView';
 import { QuickAddModal } from './components/QuickAddModal';
+import { MiniCalculator } from './components/MiniCalculator';
 import { SmsSimulatorModal } from './components/SmsSimulatorModal';
 import { BudgetSettingsModal } from './components/BudgetSettingsModal';
 import { UserProfileModal } from './components/UserProfileModal';
@@ -95,6 +96,8 @@ export default function App() {
   const [isSmsSimulatorOpen, setIsSmsSimulatorOpen] = useState(false);
   const [isBudgetSettingsOpen, setIsBudgetSettingsOpen] = useState(false);
   const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);
+  const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
+  const [isCalculatorMinimized, setIsCalculatorMinimized] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('pocketspent_user_profile', JSON.stringify(userProfile));
@@ -256,6 +259,10 @@ if (!isUnlocked) {
                 onOpenSmsSimulator={() => setIsSmsSimulatorOpen(true)}
                 onOpenUserProfile={() => setIsUserProfileOpen(true)}
                 onOpenBudgetSettings={() => setIsBudgetSettingsOpen(true)}
+                onOpenCalculator={() => {
+                  setIsCalculatorOpen(true);
+                  setIsCalculatorMinimized(false);
+                }}
                 onConfirmSmsAlert={handleConfirmSmsAlert}
                 onDismissSmsAlert={handleDismissSmsAlert}
                 onEditExpense={handleOpenEditModal}
@@ -291,6 +298,25 @@ if (!isUnlocked) {
               Created by Jitesh | Powered by JTech Labs
             </footer>
           </main>
+
+          {/* Fixed Floating Calculator Quick Button */}
+          {(!isCalculatorOpen || isCalculatorMinimized) && (
+            <button
+              onClick={() => {
+                setIsCalculatorOpen(true);
+                setIsCalculatorMinimized(false);
+              }}
+              className={`fixed bottom-20 z-40 h-14 px-3.5 rounded-2xl shadow-xl flex items-center gap-2 font-bold text-xs transition-all active:scale-95 left-6 sm:left-[calc(50%-270px)] md:left-[calc(50%-320px)] lg:left-[calc(50%-360px)] border ${
+                isDarkMode
+                  ? 'bg-slate-900/90 text-emerald-400 border-slate-700 hover:bg-slate-800 shadow-slate-950/50'
+                  : 'bg-white/95 text-emerald-600 border-slate-200 hover:bg-slate-50 shadow-slate-300/40'
+              }`}
+              title="Open Mini Floating Calculator 🧮"
+            >
+              <span className="text-xl">🧮</span>
+              <span className="hidden xs:inline">Calc</span>
+            </button>
+          )}
 
           {/* Floating '+' Add Entry Button */}
           <button
@@ -389,6 +415,15 @@ if (!isUnlocked) {
         userProfile={userProfile}
         onClose={() => setIsUserProfileOpen(false)}
         onSaveProfile={(newProf) => setUserProfile(newProf)}
+        isDarkMode={isDarkMode}
+      />
+
+      <MiniCalculator
+        isOpen={isCalculatorOpen}
+        isMinimized={isCalculatorMinimized}
+        onClose={() => setIsCalculatorOpen(false)}
+        onMinimize={() => setIsCalculatorMinimized(true)}
+        onRestore={() => setIsCalculatorMinimized(false)}
         isDarkMode={isDarkMode}
       />
     </div>
