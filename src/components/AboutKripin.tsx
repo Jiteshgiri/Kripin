@@ -65,13 +65,13 @@ const AboutKripin: React.FC<AboutKripinProps> = ({
     >
       {/* Kripin Logo Watermark */}
       <img
-        src={logo}
-        alt=""
-        aria-hidden="true"
-        className={`pointer-events-none fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[420px] sm:w-[560px] max-w-[85vw] select-none ${
-          isDarkMode ? 'opacity-[0.07]' : 'opacity-[0.08]'
-        }`}
-      />
+  src={logo}
+  alt=""
+  aria-hidden="true"
+  className={`pointer-events-none fixed inset-0 w-full h-full object-contain select-none ${
+    isDarkMode ? 'opacity-[0.16]' : 'opacity-[0.18]'
+  }`}
+/>
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 py-6 sm:py-8">
 
@@ -106,7 +106,7 @@ const AboutKripin: React.FC<AboutKripinProps> = ({
         </div>
 
         {/* Hero */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-500 via-green-500 to-teal-600 text-white shadow-xl shadow-emerald-500/20 p-6 sm:p-9 mb-6">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-950 via-green-900 to-teal-950 text-white shadow-xl shadow-emerald-500/20 p-6 sm:p-9 mb-6">
 
           <div className="absolute -right-12 -top-12 w-40 h-40 rounded-full bg-white/10" />
           <div className="absolute -left-16 -bottom-20 w-48 h-48 rounded-full bg-white/10" />
@@ -117,9 +117,10 @@ const AboutKripin: React.FC<AboutKripinProps> = ({
               Smart Expense Diary
             </div>
 
+            {/* Kripin Logo Text */}
             <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-              <span className="text-white">Kri</span>
-              <span className="text-red-200">pin</span>
+              <span className="text-emerald-400">Kri</span>
+              <span className="text-red-500">pin</span>
             </h1>
 
             <p className="mt-3 max-w-2xl text-sm sm:text-base leading-7 text-emerald-50">
@@ -296,10 +297,12 @@ const AboutKripin: React.FC<AboutKripinProps> = ({
               Developed by
             </p>
 
+            {/* JTech Labs Branding */}
             <p className="text-lg font-extrabold mt-0.5">
               <span>Jitesh</span>
-              <span className="text-emerald-500">
-                {' '}· JTech Labs
+              <span className="ml-2">
+                <span className="text-red-500">J</span>
+                <span className="text-white">Tech Labs</span>
               </span>
             </p>
 
