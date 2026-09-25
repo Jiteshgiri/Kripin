@@ -299,12 +299,14 @@ const AboutKripin: React.FC<AboutKripinProps> = ({
 
             {/* JTech Labs Branding */}
             <p className="text-lg font-extrabold mt-0.5">
-              <span>Jitesh</span>
-              <span className="ml-2">
-                <span className="text-red-500">J</span>
-                <span className="text-white">Tech Labs</span>
-              </span>
-            </p>
+  <span>Jitesh</span>
+  <span className="ml-2">
+    <span className="text-red-500">J</span>
+    <span className={isDarkMode ? 'text-white' : 'text-slate-800'}>
+      Tech Labs
+    </span>
+  </span>
+</p>
 
             <p
               className={`text-xs mt-3 leading-5 ${
