@@ -11,6 +11,7 @@ interface HeaderProps {
   onOpenSmsSimulator: () => void;
   isDarkMode: boolean;
   onToggleTheme: () => void;
+  onOpenAbout: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -21,6 +22,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenSmsSimulator,
   isDarkMode,
   onToggleTheme,
+  onOpenAbout,
 }) => {
   return (
     <header
@@ -32,12 +34,17 @@ export const Header: React.FC<HeaderProps> = ({
     >
       <div className="max-w-4xl mx-auto flex items-center justify-between gap-2 overflow-hidden">
         <div className="flex items-center gap-2 min-w-0 shrink-1">
-          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl overflow-hidden border border-emerald-500/20 shrink-0">
+          <button 
+          type="button"
+          onClick={onOpenAbout}
+          className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl overflow-hidden border border-emerald-500/20 shrink-0"
+          title="About Kripin"
+          >
           <img
           src={logo}
           alt="Kripin Logo"
           className="w-full h-full object-cover"/>
-          </div>
+          </button>
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
               <h1 className="text-xl font-bold">

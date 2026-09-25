@@ -238,13 +238,14 @@ if (!isUnlocked) {
         <div className="w-full max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto">
           {/* Header */}
           <Header
-            budgetConfig={budgetConfig}
-            userProfile={userProfile}
-            onOpenBudgetSettings={() => setIsBudgetSettingsOpen(true)}
-            onOpenUserProfile={() => setIsUserProfileOpen(true)}
-            onOpenSmsSimulator={() => setIsSmsSimulatorOpen(true)}
-            isDarkMode={isDarkMode}
-            onToggleTheme={() => setIsDarkMode(!isDarkMode)}
+          budgetConfig={budgetConfig}
+          userProfile={userProfile}
+          onOpenBudgetSettings={() => setIsBudgetSettingsOpen(true)}
+          onOpenUserProfile={() => setIsUserProfileOpen(true)}
+          onOpenSmsSimulator={() => setIsSmsSimulatorOpen(true)}
+          onOpenAbout={() => {}}
+          isDarkMode={isDarkMode}
+          onToggleTheme={() => setIsDarkMode(!isDarkMode)}
           />
 
           {/* Tab Views */}
