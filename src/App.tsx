@@ -1,3 +1,4 @@
+import AboutKripin from './components/AboutKripin';
 import PinLock from './components/PinLock';
 import React, { useState, useEffect } from 'react';
 import { LayoutGrid, PieChart, Repeat, Plus } from 'lucide-react';
@@ -96,6 +97,7 @@ export default function App() {
   const [isSmsSimulatorOpen, setIsSmsSimulatorOpen] = useState(false);
   const [isBudgetSettingsOpen, setIsBudgetSettingsOpen] = useState(false);
   const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
   const [isCalculatorMinimized, setIsCalculatorMinimized] = useState(false);
 
@@ -227,12 +229,24 @@ if (!isUnlocked) {
 );
 }
 
+  if (!isUnlocked) {
   return (
-    <div
-      className={`min-h-screen flex flex-col font-['Plus_Jakarta_Sans',sans-serif] transition-colors ${
-        isDarkMode ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'
-      }`}
-    >
+    <PinLock onUnlock={() => setIsUnlocked(true)} />
+  );
+}
+
+if (isAboutOpen) {
+  return (
+    <AboutKripin onBack={() => setIsAboutOpen(false)} />
+  );
+}
+
+return (
+  <div
+    className={`min-h-screen flex flex-col font-['Plus_Jakarta_Sans',sans-serif] transition-colors ${
+      isDarkMode ? 'bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-800'
+    }`}
+  >
       {/* Outer wrapper */}
       <div className="flex-1 flex justify-center items-start">
         <div className="w-full max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto">
@@ -243,7 +257,7 @@ if (!isUnlocked) {
           onOpenBudgetSettings={() => setIsBudgetSettingsOpen(true)}
           onOpenUserProfile={() => setIsUserProfileOpen(true)}
           onOpenSmsSimulator={() => setIsSmsSimulatorOpen(true)}
-          onOpenAbout={() => {}}
+          onOpenAbout={() => setIsAboutOpen(true)}
           isDarkMode={isDarkMode}
           onToggleTheme={() => setIsDarkMode(!isDarkMode)}
           />
