@@ -29,7 +29,7 @@ interface HomeDashboardProps {
   onOpenSmsSimulator: () => void;
   onOpenUserProfile: () => void;
   onOpenBudgetSettings: () => void;
-  onOpenCalculator: () => void;
+  onOpenCalculator?: () => void;
   onConfirmSmsAlert: (alert: SmsAlert, category: string) => void;
   onDismissSmsAlert: (alert: SmsAlert) => void;
   onEditExpense: (expense: Expense) => void;
@@ -46,7 +46,6 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
   onOpenSmsSimulator,
   onOpenUserProfile,
   onOpenBudgetSettings,
-  onOpenCalculator,
   onConfirmSmsAlert,
   onDismissSmsAlert,
   onEditExpense,
@@ -227,23 +226,11 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
         </div>
 
         {/* Large Total Overall Balance Number */}
-        <div className="text-2xl xs:text-3xl sm:text-4xl font-extrabold mb-4 tracking-tight flex items-center gap-2 flex-wrap">  
+        <div className="text-2xl xs:text-3xl sm:text-4xl font-extrabold mb-4 tracking-tight flex items-baseline gap-2 flex-wrap">  
           <span>₹{Math.round(overallTotalBalance).toLocaleString('en-IN')}</span>
           <span className={`text-xs font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
             (Overall)
           </span>
-          <button
-            onClick={onOpenCalculator}
-            className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-xl text-xs font-semibold border transition-all active:scale-95 cursor-pointer ml-0.5 ${
-              isDarkMode
-                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20'
-                : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
-            }`}
-            title="Open Mini Floating Calculator 🧮"
-          >
-            <span className="text-sm leading-none">🧮</span>
-            <span className="text-[11px] font-bold">Calc</span>
-          </button>
         </div>
 
         {/* 2 Live Stats: Income (+ Green) & Expense (- Red) */}

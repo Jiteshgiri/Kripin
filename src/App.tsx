@@ -1,7 +1,7 @@
 import AboutKripin from './components/AboutKripin';
 import PinLock from './components/PinLock';
 import React, { useState, useEffect } from 'react';
-import { LayoutGrid, PieChart, Repeat, Plus } from 'lucide-react';
+import { LayoutGrid, PieChart, Repeat, Plus, Calculator } from 'lucide-react';
 import { Header } from './components/Header';
 import { HomeDashboard } from './components/HomeDashboard';
 import { AnalyticsView } from './components/AnalyticsView';
@@ -327,10 +327,10 @@ return (
                   ? 'bg-slate-900/90 text-emerald-400 border-slate-700 hover:bg-slate-800 shadow-slate-950/50'
                   : 'bg-white/95 text-emerald-600 border-slate-200 hover:bg-slate-50 shadow-slate-300/40'
               }`}
-              title="Open Mini Floating Calculator 🧮"
+              title="Open Mini Floating Calculator"
             >
-              <span className="text-xl">🧮</span>
-              <span className="hidden xs:inline">Calc</span>
+               <Calculator className="w-5 h-5" />
+               <span className="hidden xs:inline">Calc</span>
             </button>
           )}
 

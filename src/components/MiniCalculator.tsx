@@ -1,5 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Minus, X, Copy, Check, GripHorizontal, CornerDownRight, Maximize2, Minimize2, RotateCcw } from 'lucide-react';
+import {
+  Minus,
+  X,
+  Copy,
+  Check,
+  GripHorizontal,
+  CornerDownRight,
+  Maximize2,
+  Minimize2,
+  RotateCcw,
+  Calculator,
+} from 'lucide-react';
 
 interface MiniCalculatorProps {
   isOpen: boolean;
@@ -300,7 +311,7 @@ export const MiniCalculator: React.FC<MiniCalculatorProps> = ({
           }`}
           title="Click to expand Mini Calculator"
         >
-          <span className="text-base">🧮</span>
+          <Calculator className="w-4 h-4 text-emerald-500" />
           <span className="text-xs font-bold">Calculator</span>
           <span className="text-[11px] font-mono opacity-80 max-w-[80px] truncate ml-1 px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-500">
             {displayValue}
@@ -335,8 +346,9 @@ export const MiniCalculator: React.FC<MiniCalculatorProps> = ({
         <div className="flex items-center gap-1.5 min-w-0">
           <GripHorizontal className="w-4 h-4 text-slate-400 shrink-0" />
           <span className="text-xs font-extrabold flex items-center gap-1 truncate">
-            <span>🧮</span> Mini Calculator
-          </span>
+            <Calculator className="w-4 h-4 text-emerald-500" />
+            Mini Calculator
+            </span>
         </div>
 
         {/* Action Controls */}
