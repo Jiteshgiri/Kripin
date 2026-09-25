@@ -132,43 +132,104 @@ const AboutKripin: React.FC<AboutKripinProps> = ({
 
         {/* About */}
         <div
-          className={`rounded-2xl border shadow-sm p-5 sm:p-7 mb-6 ${
-            isDarkMode
-              ? 'bg-slate-900 border-slate-800'
-              : 'bg-white border-slate-200'
-          }`}
-        >
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
-              <Wallet className="w-5 h-5" />
-            </div>
+  className={`rounded-2xl border shadow-sm p-5 sm:p-7 mb-6 ${
+    isDarkMode
+      ? 'bg-slate-900 border-slate-800'
+      : 'bg-white border-slate-200'
+  }`}
+>
+  <div className="flex items-center gap-3 mb-4">
+    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+      <Wallet className="w-5 h-5" />
+    </div>
 
-            <div>
-              <h2 className="text-lg font-bold">
-                About Kripin
-              </h2>
+    <div>
+      <h2 className="text-lg font-bold">
+        About Kripin
+      </h2>
 
-              <p
-                className={`text-xs ${
-                  isDarkMode ? 'text-slate-500' : 'text-slate-400'
-                }`}
-              >
-                Your personal finance companion
-              </p>
-            </div>
-          </div>
+      <p
+        className={`text-xs ${
+          isDarkMode ? 'text-slate-500' : 'text-slate-400'
+        }`}
+      >
+        A name with a personal meaning
+      </p>
+    </div>
+  </div>
 
-          <p
-            className={`text-sm leading-7 ${
-              isDarkMode ? 'text-slate-300' : 'text-slate-600'
-            }`}
-          >
-            Kripin is designed to make personal expense tracking simple,
-            organized and accessible. From recording everyday expenses to
-            reviewing monthly activity, Kripin brings useful financial tools
-            together in one place.
-          </p>
-        </div>
+  <p
+    className={`text-sm leading-7 ${
+      isDarkMode ? 'text-slate-300' : 'text-slate-600'
+    }`}
+  >
+    Kripin is a personal expense diary created to make everyday
+    expense tracking simple, organized and easy to understand.
+    The purpose of Kripin is to help users keep their expenses,
+    income, recurring bills and financial activity in one place.
+  </p>
+
+  <div
+    className={`mt-5 rounded-xl border p-4 ${
+      isDarkMode
+        ? 'bg-slate-950 border-slate-800'
+        : 'bg-slate-50 border-slate-100'
+    }`}
+  >
+    <h3 className="font-bold text-base mb-2">
+  A Name With a Story{' '}
+  <span className="text-red-500">Kri</span>
+  <span className="text-emerald-500">pin</span>
+</h3>
+
+
+    <p
+      className={`text-sm leading-7 ${
+        isDarkMode ? 'text-slate-300' : 'text-slate-600'
+      }`}
+    >
+      The name Kripin has a very special personal meaning. It is
+      created from the names of Jitesh parents.
+    </p>
+
+    <p
+      className={`text-sm leading-7 mt-3 ${
+        isDarkMode ? 'text-slate-300' : 'text-slate-600'
+      }`}
+    >
+      <span className="font-bold text-emerald-500">Kri</span>
+      comes from <span className="font-bold">Krishna</span>,
+      and{' '}
+      <span className="font-bold text-red-500">pin</span>
+      comes from <span className="font-bold">Pinky</span>.
+    </p>
+
+    <div className="mt-4 text-center">
+      <p className="text-xl sm:text-2xl font-extrabold tracking-wide">
+        <span className="text-emerald-500">Kri</span>
+        <span className="text-red-500">pin</span>
+      </p>
+
+      <p
+        className={`text-xs mt-1 ${
+          isDarkMode ? 'text-slate-500' : 'text-slate-400'
+        }`}
+      >
+        Krishna + Pinky
+      </p>
+    </div>
+
+    <p
+      className={`text-sm leading-7 mt-4 ${
+        isDarkMode ? 'text-slate-300' : 'text-slate-600'
+      }`}
+    >
+      So, Kripin is more than just the name of an application.
+      It represents a personal connection with Jitesh parents
+      and gives the project a meaningful identity.
+    </p>
+  </div>
+</div>
 
         {/* Features */}
         <div className="mb-6">
