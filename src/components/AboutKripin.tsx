@@ -198,7 +198,7 @@ const AboutKripin: React.FC<AboutKripinProps> = ({
       }`}
     >
       <span className="font-bold text-emerald-500">Kri</span>
-      comes from <span className="font-bold">Krishna</span>. {' '}
+      comes from <span className="font-bold">Krishna</span>. <br /> {' '}
       <span className="font-bold text-red-500">pin</span>
       comes from <span className="font-bold">Pinky</span>.
     </p>
