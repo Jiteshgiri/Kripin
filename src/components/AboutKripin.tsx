@@ -178,8 +178,8 @@ const AboutKripin: React.FC<AboutKripinProps> = ({
   >
     <h3 className="font-bold text-base mb-2">
   A Name With a Story{' '}
-  <span className="text-red-500">Kri</span>
-  <span className="text-emerald-500">pin</span>
+  <span className="text-emerald-500">Kri</span>
+  <span className="text-red-500">pin</span>
 </h3>
 
 
@@ -225,7 +225,7 @@ const AboutKripin: React.FC<AboutKripinProps> = ({
     >
       So, Kripin is more than just the name of an application.
       It represents a personal connection with Jitesh parents
-      and gives the project a meaningful identity.
+      and gives the Application a meaningful identity.
     </p>
   </div>
 </div>
