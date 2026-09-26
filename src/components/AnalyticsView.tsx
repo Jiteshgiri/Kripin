@@ -1,5 +1,18 @@
 import React, { useState } from 'react';
-import { PieChart, Download, Lightbulb, Sparkles } from 'lucide-react';
+import {
+  PieChart,
+  Download,
+  Lightbulb,
+  Sparkles,
+  Utensils,
+  ShoppingBag,
+  Car,
+  Clapperboard,
+  Hospital,
+  Smartphone,
+  House,
+  Package,
+} from 'lucide-react';
 import jsPDF from 'jspdf';
 import { Expense, CATEGORIES, UserProfile, BudgetConfig } from '../types';
 import { buildMonthlyPdfDoc, PdfTransactionItem } from '../utils/pdfGenerator';
@@ -20,6 +33,17 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
   userProfile,
   isDarkMode = true,
 }) => {
+    const categoryIcons = {
+    food: Utensils,
+    shopping: ShoppingBag,
+    travel: Car,
+    bills: Lightbulb,
+    entertainment: Clapperboard,
+    medical: Hospital,
+    recharge: Smartphone,
+    rent: House,
+    other: Package,
+  };
   // Selected Month State (Default to current month YYYY-MM)
   const now = new Date();
   const currentMonthKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -73,14 +97,14 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
     accumulatedPercent += pct;
 
     return {
-      catName,
-      amount,
-      pct: Math.round(pct * 100),
-      color: catMatch.colorHex,
-      icon: catMatch.iconEmoji,
-      strokeDasharray,
-      strokeDashoffset,
-    };
+  catName,
+  amount,
+  pct: Math.round(pct * 100),
+  color: catMatch.colorHex,
+  icon: categoryIcons[catMatch.id as keyof typeof categoryIcons],
+  strokeDasharray,
+  strokeDashoffset,
+};
   });
 
   // PDF Preview Modal State
@@ -211,7 +235,10 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
         <div className={`rounded-xl p-3 border text-xs text-center ${
           isDarkMode ? 'bg-slate-900 border-slate-800 text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-600'
         }`}>
-          <span>💡 Add expenses to view instant category insights.</span>
+          <span className="flex items-center justify-center gap-1.5">
+  <Lightbulb className="w-3.5 h-3.5" />
+  Add expenses to view instant category insights.
+</span>
         </div>
       )}
 
@@ -296,11 +323,11 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
               <div key={seg.catName} className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
-                    <span className="text-base">{seg.icon}</span>
+                    {seg.icon ? <seg.icon className="w-4 h-4" /> : null}
                     <span className={`font-bold ${isDarkMode ? 'text-slate-200' : 'text-slate-800'}`}>
                       {seg.catName}
-                    </span>
-                  </div>
+                      </span>
+                      </div>
                   <div className="text-right">
                     <span className={`font-extrabold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
                       ₹{Math.round(seg.amount).toLocaleString()}

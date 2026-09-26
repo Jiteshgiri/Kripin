@@ -12,6 +12,15 @@ import {
   X,
   MessageSquare,
   Pencil,
+  Utensils,
+  ShoppingBag,
+  Car,
+  Lightbulb,
+  Clapperboard,
+  Hospital,
+  Smartphone,
+  House,
+  Package,
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import { Expense, SmsAlert, CATEGORIES, UserProfile, BudgetConfig, DEFAULT_CATEGORY_BUDGETS } from '../types';
@@ -52,6 +61,18 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
   onDeleteExpense,
   isDarkMode,
 }) => {
+
+  const categoryIcons = {
+  food: Utensils,
+  shopping: ShoppingBag,
+  travel: Car,
+  bills: Lightbulb,
+  entertainment: Clapperboard,
+  medical: Hospital,
+  recharge: Smartphone,
+  rent: House,
+  other: Package,
+};
   // Currently selected month (YYYY-MM string, default current month)
   const [selectedMonthKey, setSelectedMonthKey] = useState(() => {
     const d = new Date();
@@ -419,7 +440,12 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
                     <div
                       className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0 border ${categoryMatch.bgColor}`}
                     >
-                      {categoryMatch.iconEmoji}
+                      {(() => {
+                        const Icon = categoryIcons[categoryMatch.id as keyof typeof categoryIcons];
+                        return Icon ? (
+                        <Icon className="w-5 h-5" />
+                      ) : null;
+                      })()}
                     </div>
 
                     <div className="min-w-0">

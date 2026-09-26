@@ -1,9 +1,8 @@
-import { CATEGORIES, CategoryBudgets, DEFAULT_CATEGORY_BUDGETS } from '../types';
-
+import React from 'react';
 export interface CategoryBudgetStatus {
   categoryName: string;
   catId: string;
-  iconEmoji: string;
+  icon: React.ElementType;
   colorHex: string;
   bgColor: string;
   budgetAmount: number;
@@ -18,7 +17,52 @@ export interface CategoryBudgetStatus {
 export interface BudgetAlertItem {
   id: string;
   categoryName: string;
-  iconEmoji: string;
+  icon: React.ElementType;
+  type: 'warning' | 'critical' | 'exceeded';
+  title: string;
+  message: string;
+  percent: number;
+  exceededAmount?: number;
+  remainingAmount?: number;
+}
+
+import {
+  CATEGORIES,
+  CategoryBudgets,
+  DEFAULT_CATEGORY_BUDGETS,
+} from '../types';
+
+import {
+  Utensils,
+  ShoppingBag,
+  Car,
+  Lightbulb,
+  Clapperboard,
+  Hospital,
+  Smartphone,
+  House,
+  Package,
+} from 'lucide-react';
+
+export interface CategoryBudgetStatus {
+  categoryName: string;
+  catId: string;
+  icon: React.ElementType;
+  colorHex: string;
+  bgColor: string;
+  budgetAmount: number;
+  spentAmount: number;
+  remainingAmount: number;
+  usagePercent: number;
+  status: 'Safe' | 'Warning' | 'Critical' | 'Exceeded';
+  statusColorClass: string;
+  barColorClass: string;
+}
+
+export interface BudgetAlertItem {
+  id: string;
+  categoryName: string;
+  icon: React.ElementType;
   type: 'warning' | 'critical' | 'exceeded';
   title: string;
   message: string;
@@ -97,7 +141,17 @@ export function calculateCategoryStatuses(
   const allCategoryNames = Array.from(
     new Set([...Object.keys(effectiveBudgets), ...Object.keys(expenseMap)])
   ).filter((catName) => catName !== 'Salary / Allowance' && catName !== 'Income');
-
+const categoryIcons = {
+  food: Utensils,
+  shopping: ShoppingBag,
+  travel: Car,
+  bills: Lightbulb,
+  entertainment: Clapperboard,
+  medical: Hospital,
+  recharge: Smartphone,
+  rent: House,
+  other: Package,
+};
   return allCategoryNames.map((catName) => {
     const builtinCat = CATEGORIES.find((c) => c.displayName === catName || c.id === catName);
     const budgetAmount = typeof effectiveBudgets[catName] === 'number' ? effectiveBudgets[catName] : 0;
@@ -116,7 +170,8 @@ export function calculateCategoryStatuses(
     return {
       categoryName: catName,
       catId: builtinCat ? builtinCat.id : catName.toLowerCase().replace(/\s+/g, '-'),
-      iconEmoji: builtinCat ? builtinCat.iconEmoji : '🎯',
+      icon: builtinCat ? categoryIcons[builtinCat.id as keyof typeof categoryIcons]
+      : Package,
       colorHex: builtinCat ? builtinCat.colorHex : '#10B981',
       bgColor: builtinCat ? builtinCat.bgColor : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
       budgetAmount,
@@ -144,9 +199,9 @@ export function generateBudgetAlerts(
       alerts.push({
         id: `alert-exceeded-${st.catId}`,
         categoryName: st.categoryName,
-        iconEmoji: st.iconEmoji,
+        icon: st.icon,
         type: 'exceeded',
-        title: '❌ Budget Exceeded',
+        title: 'Budget Exceeded',
         message: `${st.categoryName} budget exceeded by ₹${exceededAmt.toLocaleString('en-IN')}`,
         percent: st.usagePercent,
         exceededAmount: exceededAmt,
@@ -155,9 +210,9 @@ export function generateBudgetAlerts(
       alerts.push({
         id: `alert-critical-${st.catId}`,
         categoryName: st.categoryName,
-        iconEmoji: st.iconEmoji,
+        icon: st.icon,
         type: 'critical',
-        title: '⚠️ Critical Budget Level',
+        title: 'Critical Budget Level',
         message: `Only ₹${st.remainingAmount.toLocaleString('en-IN')} remaining in ${st.categoryName} Budget (${st.usagePercent}% used).`,
         percent: st.usagePercent,
         remainingAmount: st.remainingAmount,
@@ -166,9 +221,9 @@ export function generateBudgetAlerts(
       alerts.push({
         id: `alert-warning-${st.catId}`,
         categoryName: st.categoryName,
-        iconEmoji: st.iconEmoji,
+        icon: st.icon,
         type: 'warning',
-        title: '⚠️ Budget Warning',
+        title: 'Budget Warning',
         message: `You have used ${st.usagePercent}% of your ${st.categoryName} budget.`,
         percent: st.usagePercent,
       });

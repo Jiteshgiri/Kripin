@@ -1,5 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { X, ArrowDownRight, ArrowUpRight, Check, Zap, Calendar, Trash2, AlertTriangle } from 'lucide-react';
+import {
+  X,
+  ArrowDownRight,
+  ArrowUpRight,
+  Check,
+  Zap,
+  Calendar,
+  Trash2,
+  AlertTriangle,
+  Utensils,
+  ShoppingBag,
+  Car,
+  Lightbulb,
+  Clapperboard,
+  Hospital,
+  Smartphone,
+  House,
+  Package,
+} from 'lucide-react';
 import { CATEGORIES, CategoryOption, Expense } from '../types';
 
 interface QuickAddModalProps {
@@ -50,6 +68,17 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
   }, [editingExpense, isOpen]);
 
   if (!isOpen) return null;
+  const categoryIcons = {
+  food: Utensils,
+  shopping: ShoppingBag,
+  travel: Car,
+  bills: Lightbulb,
+  entertainment: Clapperboard,
+  medical: Hospital,
+  recharge: Smartphone,
+  rent: House,
+  other: Package,
+};
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -287,7 +316,12 @@ export const QuickAddModal: React.FC<QuickAddModalProps> = ({
                           : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300'
                       }`}
                     >
-                      <span className="text-xl mb-0.5">{cat.iconEmoji}</span>
+                      {(() => {
+                        const Icon = categoryIcons[cat.id as keyof typeof categoryIcons];
+                        return Icon ? (
+                        <Icon className="w-6 h-6 mb-0.5" />
+                      ) : null;
+                      })()}
                       <span className="text-[10px] font-semibold truncate w-full text-center">
                         {cat.displayName.split(' ')[0]}
                       </span>

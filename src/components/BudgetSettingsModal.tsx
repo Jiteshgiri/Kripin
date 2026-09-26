@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { X, Target, GraduationCap, Briefcase, Check, AlertCircle } from 'lucide-react';
+import {
+  X,
+  Target,
+  GraduationCap,
+  Briefcase,
+  Check,
+  AlertCircle,
+  Lightbulb,
+} from 'lucide-react';
 import { BudgetConfig } from '../types';
 
 interface BudgetSettingsModalProps {
@@ -149,7 +157,10 @@ export const BudgetSettingsModal: React.FC<BudgetSettingsModalProps> = ({
             <div className={`p-3 rounded-xl border text-xs ${
               isDarkMode ? 'bg-slate-950 border-slate-800 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-600'
             }`}>
-              <p className="font-semibold text-emerald-500 mb-1">💡 Tip</p>
+              <p className="font-semibold text-emerald-500 mb-1 flex items-center gap-1">
+                <Lightbulb className="w-3.5 h-3.5" />
+                Tip
+                </p>
               Setting your monthly income helps track total savings and calculate monthly budget metrics accurately.
             </div>
           </div>
