@@ -394,7 +394,13 @@ const AboutKripin: React.FC<AboutKripinProps> = ({
               isDarkMode ? 'text-slate-600' : 'text-slate-400'
             }`}
           >
-            Developed by Jitesh · JTech Labs
+            <p>
+              Developed by Jitesh ·{' '}
+              <span className="text-red-500">J</span>
+              <span className={isDarkMode ? 'text-white' : 'text-slate-900'}>
+                Tech Labs
+                </span>
+                </p>
           </p>
         </div>
 
