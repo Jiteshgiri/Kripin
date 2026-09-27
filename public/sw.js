@@ -1,10 +1,8 @@
 const CACHE_NAME = 'kripin-v2';
 const STATIC_ASSETS = [
   '/',
-  '/index.html',
   '/manifest.webmanifest',
   '/manifest.json',
-  '/favicon.ico',
   '/pwa-192x192.png',
   '/pwa-512x512.png',
   '/Kripin.png'
