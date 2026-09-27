@@ -255,27 +255,31 @@ await page.render({
         </div>
 
 
-        {/* Modal Body - PDF Preview */}
-        <div className="flex-1 overflow-y-auto p-3 sm:p-5 flex flex-col items-center justify-center min-h-[280px] sm:min-h-[420px] bg-slate-950/40">
-          <div
-            ref={pdfPreviewRef}
-            className="w-full max-w-[820px] rounded-2xl bg-slate-400/60 p-2 sm:p-4 overflow-y-auto"
-          >
-            {isRenderingPdf && (
-              <div className="flex flex-col items-center justify-center py-16 gap-3">
-                <FileText className="w-10 h-10 text-emerald-500 animate-pulse" />
-                <p className="text-xs font-semibold text-slate-500">
-                  Rendering PDF preview...
-                </p>
-              </div>
-            )}
-          </div>
+{/* Modal Body - PDF Preview */}
+<div className="flex-1 overflow-y-auto p-3 sm:p-5 min-h-[280px] sm:min-h-[420px] bg-slate-950/40">
+  <div className="w-full max-w-[820px] mx-auto rounded-2xl bg-slate-400/60 p-2 sm:p-4">
 
-          <p className="text-[10px] text-center text-slate-400 flex items-center justify-center gap-1 mt-2">
-            <Sparkles className="w-3 h-3 text-emerald-500" />
-            <span>Preview generated inside Kripin</span>
-          </p>
-        </div>
+    {isRenderingPdf && (
+      <div className="flex flex-col items-center justify-center py-16 gap-3">
+        <FileText className="w-10 h-10 text-emerald-500 animate-pulse" />
+        <p className="text-xs font-semibold text-slate-500">
+          Rendering PDF preview...
+        </p>
+      </div>
+    )}
+
+    {/* PDF.js renders canvases here */}
+    <div
+      ref={pdfPreviewRef}
+      className="w-full"
+    />
+  </div>
+
+  <p className="text-[10px] text-center text-slate-400 flex items-center justify-center gap-1 mt-2">
+    <Sparkles className="w-3 h-3 text-emerald-500" />
+    <span>Preview generated inside Kripin</span>
+  </p>
+</div>
 
         {/* Modal Footer Actions */}
         <div
