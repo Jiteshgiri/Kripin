@@ -237,7 +237,7 @@ const PinLock: React.FC<PinLockProps> = ({
                   key={number}
                   type="button"
                   onClick={() => pressNumber(number)}
-                  className={`h-1 sm:h-[68px] rounded-2xl border text-xl font-extrabold transition-all active:scale-90 ${
+                  className={`h-14 sm:h-[68px] rounded-2xl border text-xl font-extrabold transition-all active:scale-90 ${
                     isDarkMode
                       ? 'bg-slate-800 border-slate-700 text-white hover:bg-emerald-500 hover:border-emerald-400'
                       : 'bg-slate-50 border-slate-200 text-slate-800 hover:bg-emerald-500 hover:border-emerald-400 hover:text-white'
