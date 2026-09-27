@@ -85,22 +85,27 @@ useEffect(() => {
         const baseViewport = page.getViewport({ scale: 1 });
 
         const availableWidth = Math.max(
-          container.clientWidth - 16,
-          280
-        );
+  container.clientWidth - 16,
+  280
+);
 
-        const scale = availableWidth / baseViewport.width;
-        const viewport = page.getViewport({ scale });
+// Keep the PDF readable instead of shrinking the whole A4 page.
+const zoomMultiplier = window.innerWidth < 640 ? 1.45 : 1.25;
 
-        const pageWrapper = document.createElement('div');
+const scale =
+  (availableWidth / baseViewport.width) * zoomMultiplier;
 
-        pageWrapper.className =
-          'w-full flex justify-center mb-4 last:mb-0';
+const viewport = page.getViewport({ scale });
 
-        const canvas = document.createElement('canvas');
+const pageWrapper = document.createElement('div');
 
-        canvas.className =
-          'block max-w-full h-auto bg-white rounded-lg shadow-lg';
+pageWrapper.className =
+  'w-max min-w-full flex justify-center mb-4 last:mb-0';
+
+const canvas = document.createElement('canvas');
+
+canvas.className =
+  'block h-auto bg-white rounded-lg shadow-lg';
 
         const context = canvas.getContext('2d');
 
@@ -257,7 +262,7 @@ await page.render({
 
 {/* Modal Body - PDF Preview */}
 <div className="flex-1 overflow-y-auto p-3 sm:p-5 min-h-[280px] sm:min-h-[420px] bg-slate-950/40">
-  <div className="w-full max-w-[820px] mx-auto rounded-2xl bg-slate-400/60 p-2 sm:p-4">
+  <div className="w-full max-w-[820px] mx-auto rounded-2xl bg-slate-400/60 p-2 sm:p-4 overflow-x-auto">
 
     {isRenderingPdf && (
       <div className="flex flex-col items-center justify-center py-16 gap-3">
