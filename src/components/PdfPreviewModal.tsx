@@ -1,8 +1,13 @@
-import logo from "../assets/images/Kripin.png";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import jsPDF from 'jspdf';
-import {Download, X, Eye, FileText, Check, Pencil, Sparkles, AlertCircle, ExternalLink,} from 'lucide-react';
+import * as pdfjsLib from 'pdfjs-dist';
+import { Download, X, Eye, FileText, Check, Pencil, Sparkles } from 'lucide-react';
 import { UserProfile } from '../types';
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url
+).toString();
 
 interface PdfPreviewModalProps {
   isOpen: boolean;
@@ -27,41 +32,140 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({
   userProfile,
   isDarkMode = true,
 }) => {
-  const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
-  const [isDownloading, setIsDownloading] = useState(false);
-  const [downloadSuccess, setDownloadSuccess] = useState(false);
+const [pdfBlobUrl, setPdfBlobUrl] = useState<string | null>(null);
+const [isDownloading, setIsDownloading] = useState(false);
+const [downloadSuccess, setDownloadSuccess] = useState(false);
+const [isRenderingPdf, setIsRenderingPdf] = useState(false);
 
-  useEffect(() => {
-    if (isOpen && pdfDoc) {
-      try {
-        const blob = pdfDoc.output('blob');
-        const url = URL.createObjectURL(blob);
-        setPdfBlobUrl(url);
+const pdfPreviewRef = useRef<HTMLDivElement | null>(null);
 
-        return () => {
-          URL.revokeObjectURL(url);
-        };
-      } catch (err) {
-        console.error('Error generating PDF preview blob:', err);
+useEffect(() => {
+  if (!isOpen || !pdfDoc) {
+    setPdfBlobUrl(null);
+    return;
+  }
+
+  let cancelled = false;
+  let pdfInstance: pdfjsLib.PDFDocumentProxy | null = null;
+  let objectUrl: string | null = null;
+
+  const renderPdf = async () => {
+    try {
+      setIsRenderingPdf(true);
+
+      const blob = pdfDoc.output('blob');
+      objectUrl = URL.createObjectURL(blob);
+
+      setPdfBlobUrl(objectUrl);
+
+      const arrayBuffer = await blob.arrayBuffer();
+
+      if (cancelled) return;
+
+      const loadingTask = pdfjsLib.getDocument({
+        data: new Uint8Array(arrayBuffer),
+      });
+
+      pdfInstance = await loadingTask.promise;
+
+      if (cancelled || !pdfPreviewRef.current) return;
+
+      const container = pdfPreviewRef.current;
+      container.innerHTML = '';
+
+      for (
+        let pageNumber = 1;
+        pageNumber <= pdfInstance.numPages;
+        pageNumber++
+      ) {
+        if (cancelled) break;
+
+        const page = await pdfInstance.getPage(pageNumber);
+
+        const baseViewport = page.getViewport({ scale: 1 });
+
+        const availableWidth = Math.max(
+          container.clientWidth - 16,
+          280
+        );
+
+        const scale = availableWidth / baseViewport.width;
+        const viewport = page.getViewport({ scale });
+
+        const pageWrapper = document.createElement('div');
+
+        pageWrapper.className =
+          'w-full flex justify-center mb-4 last:mb-0';
+
+        const canvas = document.createElement('canvas');
+
+        canvas.className =
+          'block max-w-full h-auto bg-white rounded-lg shadow-lg';
+
+        const context = canvas.getContext('2d');
+
+        if (!context) continue;
+
+        const devicePixelRatio = window.devicePixelRatio || 1;
+
+        canvas.width = Math.floor(
+          viewport.width * devicePixelRatio
+        );
+
+        canvas.height = Math.floor(
+          viewport.height * devicePixelRatio
+        );
+
+        canvas.style.width = `${viewport.width}px`;
+        canvas.style.height = `${viewport.height}px`;
+
+        context.setTransform(
+          devicePixelRatio,
+          0,
+          0,
+          devicePixelRatio,
+          0,
+          0
+        );
+
+        pageWrapper.appendChild(canvas);
+        container.appendChild(pageWrapper);
+
+await page.render({
+  canvasContext: context,
+  viewport,
+  canvas,
+}).promise;
       }
-    } else {
-      setPdfBlobUrl(null);
+
+      if (!cancelled) {
+        setIsRenderingPdf(false);
+      }
+    } catch (err) {
+      console.error('Error rendering PDF preview:', err);
+
+      if (!cancelled) {
+        setIsRenderingPdf(false);
+      }
     }
-  }, [isOpen, pdfDoc]);
+  };
+
+  renderPdf();
+
+  return () => {
+    cancelled = true;
+
+    if (pdfInstance) {pdfInstance.cleanup();}
+
+    if (objectUrl) {
+      URL.revokeObjectURL(objectUrl);
+    }
+  };
+}, [isOpen, pdfDoc]);
 
   if (!isOpen || !pdfDoc) return null;
 
   const fileName = `Expense_Report_${monthLabel.replace(/[\s,]+/g, '_')}.pdf`;
-  
-  const handleOpenMobilePreview = () => {
-  if (!pdfBlobUrl) return;
-
-  const newWindow = window.open(pdfBlobUrl, '_blank');
-
-  if (!newWindow) {
-    window.location.href = pdfBlobUrl;
-  }
-};
 
   const handleTriggerDownload = () => {
     setIsDownloading(true);
@@ -150,79 +254,35 @@ export const PdfPreviewModal: React.FC<PdfPreviewModalProps> = ({
           </div>
         </div>
 
-{/* Modal Body - PDF Preview */}
-<div className="flex-1 overflow-y-auto p-3 sm:p-5 flex flex-col items-center justify-center min-h-[280px] sm:min-h-[420px] bg-slate-950/40">
-  {pdfBlobUrl ? (
-    <>
-      {/* Desktop PDF Preview */}
-      <div className="hidden sm:flex w-full h-full min-h-[300px] sm:min-h-[440px] flex-col gap-2">
-        <iframe
-          src={`${pdfBlobUrl}#toolbar=0&navpanes=0`}
-          title="PDF Preview"
-          className="w-full h-full min-h-[320px] sm:min-h-[440px] rounded-2xl border border-slate-700/60 bg-white shadow-xl"
-        />
 
-        <p className="text-[10px] text-center text-slate-400 flex items-center justify-center gap-1 mt-1">
-          <Sparkles className="w-3 h-3 text-emerald-500" />
-          <span>
-            Exact A4 Page layout statement generated with official JTech Labs seal
-          </span>
-        </p>
-      </div>
-
-      {/* Mobile PDF Preview */}
-      <div className="flex sm:hidden w-full flex-col items-center justify-center py-8">
-        <div
-          className={`w-full rounded-2xl border p-6 text-center ${
-            isDarkMode
-              ? 'bg-slate-900 border-slate-700'
-              : 'bg-white border-slate-200'
-          }`}
-        >
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-            <FileText className="w-8 h-8 text-emerald-500" />
+        {/* Modal Body - PDF Preview */}
+        <div className="flex-1 overflow-y-auto p-3 sm:p-5 flex flex-col items-center justify-center min-h-[280px] sm:min-h-[420px] bg-slate-950/40">
+          <div
+            ref={pdfPreviewRef}
+            className="w-full max-w-[820px] rounded-2xl bg-slate-400/60 p-2 sm:p-4 overflow-y-auto"
+          >
+            {isRenderingPdf && (
+              <div className="flex flex-col items-center justify-center py-16 gap-3">
+                <FileText className="w-10 h-10 text-emerald-500 animate-pulse" />
+                <p className="text-xs font-semibold text-slate-500">
+                  Rendering PDF preview...
+                </p>
+              </div>
+            )}
           </div>
 
-          <h4 className="text-sm font-extrabold mb-1">
-            PDF Ready
-          </h4>
-
-          <p
-            className={`text-xs mb-5 ${
-              isDarkMode ? 'text-slate-400' : 'text-slate-500'
-            }`}
-          >
-            Tap below to preview the complete PDF statement.
-          </p>
-
-          <button
-            type="button"
-            onClick={handleOpenMobilePreview}
-            className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition-all"
-          >
-            <ExternalLink className="w-4 h-4" />
-            Open PDF Preview
-          </button>
-
-          <div className="flex items-center justify-center gap-1.5 mt-4 text-[10px] text-slate-400">
+          <p className="text-[10px] text-center text-slate-400 flex items-center justify-center gap-1 mt-2">
             <Sparkles className="w-3 h-3 text-emerald-500" />
-            <span>Exact A4 PDF generated by Kripin</span>
-          </div>
-        </div>
-      </div>
-    </>
-  ) : (
-            <div className="text-center py-12 text-slate-400 flex flex-col items-center gap-2">
-              <FileText className="w-10 h-10 animate-bounce text-emerald-500" />
-              <p className="text-xs font-semibold">Generating statement preview...</p>
-            </div>
-          )}
+            <span>Preview generated inside Kripin</span>
+          </p>
         </div>
 
         {/* Modal Footer Actions */}
         <div
           className={`px-4 sm:px-6 py-3.5 border-t flex flex-col-reverse xs:flex-row items-center justify-between gap-2.5 shrink-0 ${
-            isDarkMode ? 'border-slate-800 bg-slate-950/80' : 'border-slate-200 bg-slate-50'
+            isDarkMode
+              ? 'border-slate-800 bg-slate-950/80'
+              : 'border-slate-200 bg-slate-50'
           }`}
         >
           {/* Close / Edit Button */}
