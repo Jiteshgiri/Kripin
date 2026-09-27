@@ -12,6 +12,9 @@ import {
   Code2,
   Sparkles,
 } from 'lucide-react';
+import packageJson from '../../package.json';
+
+const APP_VERSION = packageJson.version;
 
 interface AboutKripinProps {
   onBack?: () => void;
@@ -101,7 +104,7 @@ const AboutKripin: React.FC<AboutKripinProps> = ({
                 : 'bg-emerald-50 text-emerald-600 border-emerald-100'
             }`}
           >
-            Version 1.0
+            Version {APP_VERSION}
           </span>
         </div>
 
