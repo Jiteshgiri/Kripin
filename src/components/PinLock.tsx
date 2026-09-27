@@ -118,20 +118,12 @@ const PinLock: React.FC<PinLockProps> = ({
               />
             </div>
 
-            <p className="text-sm font-extrabold">
-  <span className="text-emerald-500">Kri</span>
-  <span className="text-red-500">pin</span>
-</p>
-
-              <p
-                className={`text-[10px] font-medium ${
-                  isDarkMode
-                    ? 'text-slate-400'
-                    : 'text-slate-500'
-                }`}
-              >
-                Your personal expense diary
-              </p>
+            <div className="flex items-center">
+  <p className="text-lg sm:text-xl font-extrabold tracking-tight">
+    <span className="text-emerald-500">Kri</span>
+    <span className="text-red-500">pin</span>
+  </p>
+</div>
             </div>
           </div>
 
