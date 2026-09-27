@@ -74,8 +74,8 @@ const PinLock: React.FC<PinLockProps> = ({
   const keypad = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
   return (
-    <div
-      className={`min-h-screen relative overflow-hidden flex items-center justify-center px-4 py-8 sm:px-6 ${
+<div
+  className={`h-dvh relative overflow-hidden flex items-center justify-center px-3 py-3 sm:min-h-screen sm:px-6 sm:py-8 ${
         isDarkMode
           ? 'bg-slate-950 text-white'
           : 'bg-slate-100 text-slate-900'
@@ -100,9 +100,9 @@ const PinLock: React.FC<PinLockProps> = ({
         />
       </div>
 
-      <div className="relative z-10 w-full max-w-lg">
+      <div className="relative z-10 w-full max-w-lg h-full sm:h-auto flex flex-col justify-center">
         {/* Brand */}
-        <div className="text-center mb-6">
+        <div className="text-center mb-2 sm:mb-6">
           <div
             className={`inline-flex items-center gap-3 px-4 py-2 rounded-2xl border backdrop-blur-md ${
               isDarkMode
@@ -146,7 +146,7 @@ const PinLock: React.FC<PinLockProps> = ({
           {/* Top accent */}
           <div className="h-1.5 bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400" />
 
-          <div className="p-6 sm:p-9">
+          <div className="p-3.5 sm:p-9">
 {/* Security label */}
 <div className="flex justify-end mb-7">
   <div className="text-right">
@@ -173,8 +173,8 @@ const PinLock: React.FC<PinLockProps> = ({
 </div>
 
             {/* PIN heading */}
-            <div className="text-center mb-7">
-              <div className="relative inline-flex mb-4">
+            <div className="text-center mb-3 sm:mb-7">
+              <div className="relative inline-flex mb-2 sm:mb-4">
                 <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
                   {error ? (
                     <LockKeyhole className="w-8 h-8 text-red-500" />
@@ -206,7 +206,7 @@ const PinLock: React.FC<PinLockProps> = ({
             </div>
 
             {/* PIN dots */}
-            <div className="flex justify-center gap-4 mb-7">
+            <div className="flex justify-center gap-3 mb-3 sm:gap-4 sm:mb-7">
               {[0, 1, 2, 3].map((index) => (
                 <div
                   key={index}
@@ -231,13 +231,13 @@ const PinLock: React.FC<PinLockProps> = ({
             </div>
 
             {/* Keypad */}
-            <div className="grid grid-cols-3 gap-3 sm:gap-4 max-w-xs mx-auto">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 max-w-xs mx-auto">
               {keypad.map((number) => (
                 <button
                   key={number}
                   type="button"
                   onClick={() => pressNumber(number)}
-                  className={`h-16 sm:h-[68px] rounded-2xl border text-xl font-extrabold transition-all active:scale-90 ${
+                  className={`h-1 sm:h-[68px] rounded-2xl border text-xl font-extrabold transition-all active:scale-90 ${
                     isDarkMode
                       ? 'bg-slate-800 border-slate-700 text-white hover:bg-emerald-500 hover:border-emerald-400'
                       : 'bg-slate-50 border-slate-200 text-slate-800 hover:bg-emerald-500 hover:border-emerald-400 hover:text-white'
@@ -253,7 +253,7 @@ const PinLock: React.FC<PinLockProps> = ({
               <button
                 type="button"
                 onClick={() => pressNumber('0')}
-                className={`h-16 sm:h-[68px] rounded-2xl border text-xl font-extrabold transition-all active:scale-90 ${
+                className={`h-14 sm:h-[68px] rounded-2xl border text-xl font-extrabold transition-all active:scale-90 ${
                   isDarkMode
                     ? 'bg-slate-800 border-slate-700 text-white hover:bg-emerald-500 hover:border-emerald-400'
                     : 'bg-slate-50 border-slate-200 text-slate-800 hover:bg-emerald-500 hover:border-emerald-400 hover:text-white'
@@ -266,7 +266,7 @@ const PinLock: React.FC<PinLockProps> = ({
               <button
                 type="button"
                 onClick={removeDigit}
-                className={`h-16 sm:h-[68px] rounded-2xl border flex items-center justify-center transition-all active:scale-90 ${
+                className={`h-14 sm:h-[68px] rounded-2xl border flex items-center justify-center transition-all active:scale-90 ${
                   isDarkMode
                     ? 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-red-500 hover:border-red-400 hover:text-white'
                     : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-red-500 hover:border-red-400 hover:text-white'
@@ -278,7 +278,7 @@ const PinLock: React.FC<PinLockProps> = ({
 
             {/* Security message */}
             <div
-              className={`mt-7 pt-5 border-t flex items-center justify-center gap-2 text-[10px] font-medium ${
+              className={`mt-3 pt-3 sm:mt-7 sm:pt-5 border-t flex items-center justify-center gap-2 text-[10px] font-medium ${
                 isDarkMode
                   ? 'border-slate-800 text-slate-500'
                   : 'border-slate-100 text-slate-400'
@@ -292,7 +292,7 @@ const PinLock: React.FC<PinLockProps> = ({
             </div>
 
             {/* Status */}
-            <div className="flex justify-center mt-4">
+            <div className="flex justify-center mt-2 sm:mt-4">
               <div
                 className={`flex items-center gap-1.5 text-[10px] font-bold px-3 py-1.5 rounded-full ${
                   isDarkMode
