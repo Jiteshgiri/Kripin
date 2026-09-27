@@ -278,37 +278,136 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
           </div>
 
           {/* Occupation / User Type */}
-          <div>
-            <label className={`block text-xs font-semibold mb-1.5 ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
-              Occupation / User Type
-            </label>
-            <div
-              className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border text-sm ${
-                isDarkMode
-                  ? 'bg-slate-950 border-slate-800 text-white focus-within:border-emerald-500'
-                  : 'bg-slate-50 border-slate-200 text-slate-900 focus-within:border-emerald-500'
-              }`}
-            >
-              <Briefcase className="w-4 h-4 text-slate-400 shrink-0" />
-              <select
-                value={occupation}
-                onChange={(e) => setOccupation(e.target.value)}
-                className="bg-transparent border-none outline-none w-full text-sm cursor-pointer"
-              >
-                <option value="Student" className={isDarkMode ? 'bg-slate-900' : ''}>Student</option>
-                <option value="Job Person / Working Professional" className={isDarkMode ? 'bg-slate-900' : ''}>
-                  Job Person / Working Professional
-                </option>
-                <option value="Business / Entrepreneur" className={isDarkMode ? 'bg-slate-900' : ''}>
-                  Business / Entrepreneur
-                </option>
-                <option value="Freelancer / Self-Employed" className={isDarkMode ? 'bg-slate-900' : ''}>
-                  Freelancer / Self-Employed
-                </option>
-                <option value="Other" className={isDarkMode ? 'bg-slate-900' : ''}>Other</option>
-              </select>
-            </div>
-          </div>
+<div>
+  <label
+    className={`block text-xs font-semibold mb-1.5 ${
+      isDarkMode ? 'text-slate-300' : 'text-slate-700'
+    }`}
+  >
+    Occupation / User Type
+  </label>
+
+  <div
+    className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border text-sm ${
+      isDarkMode
+        ? 'bg-slate-950 border-slate-800 text-white focus-within:border-emerald-500'
+        : 'bg-slate-50 border-slate-200 text-slate-900 focus-within:border-emerald-500'
+    }`}
+  >
+    <Briefcase className="w-4 h-4 text-slate-400 shrink-0" />
+
+    <select
+      value={occupation}
+      onChange={(e) => setOccupation(e.target.value)}
+      className="bg-transparent border-none outline-none w-full text-sm cursor-pointer"
+    >
+      <option
+        value=""
+        className={isDarkMode ? 'bg-slate-900' : ''}
+      >
+        Select occupation
+      </option>
+
+      <option
+        value="Student"
+        className={isDarkMode ? 'bg-slate-900' : ''}
+      >
+        Student
+      </option>
+
+      <option
+        value="Working Professional"
+        className={isDarkMode ? 'bg-slate-900' : ''}
+      >
+        Working Professional
+      </option>
+
+      <option
+        value="Government Employee"
+        className={isDarkMode ? 'bg-slate-900' : ''}
+      >
+        Government Employee
+      </option>
+
+      <option
+        value="Business / Entrepreneur"
+        className={isDarkMode ? 'bg-slate-900' : ''}
+      >
+        Business / Entrepreneur
+      </option>
+
+      <option
+        value="Freelancer / Self-Employed"
+        className={isDarkMode ? 'bg-slate-900' : ''}
+      >
+        Freelancer / Self-Employed
+      </option>
+
+      <option
+        value="Homemaker"
+        className={isDarkMode ? 'bg-slate-900' : ''}
+      >
+        Homemaker
+      </option>
+
+      <option
+        value="Teacher / Professor"
+        className={isDarkMode ? 'bg-slate-900' : ''}
+      >
+        Teacher / Professor
+      </option>
+
+      <option
+        value="Healthcare Professional"
+        className={isDarkMode ? 'bg-slate-900' : ''}
+      >
+        Healthcare Professional
+      </option>
+
+      <option
+        value="Consultant / Professional"
+        className={isDarkMode ? 'bg-slate-900' : ''}
+      >
+        Consultant / Professional
+      </option>
+
+      <option
+        value="Creator / Content Creator"
+        className={isDarkMode ? 'bg-slate-900' : ''}
+      >
+        Creator / Content Creator
+      </option>
+
+      <option
+        value="Intern / Trainee"
+        className={isDarkMode ? 'bg-slate-900' : ''}
+      >
+        Intern / Trainee
+      </option>
+
+      <option
+        value="Retired"
+        className={isDarkMode ? 'bg-slate-900' : ''}
+      >
+        Retired
+      </option>
+
+      <option
+        value="Unemployed / Looking for Work"
+        className={isDarkMode ? 'bg-slate-900' : ''}
+      >
+        Unemployed / Looking for Work
+      </option>
+
+      <option
+        value="Other"
+        className={isDarkMode ? 'bg-slate-900' : ''}
+      >
+        Other
+      </option>
+    </select>
+  </div>
+</div>
 
           <div className="border-t pt-4 mt-4">
             <h3 className="font-semibold mb-3">🔐 Change PIN</h3>

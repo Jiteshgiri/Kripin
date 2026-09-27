@@ -1,34 +1,34 @@
-import React, { useEffect, useState } from "react";
-import { Lock, Delete } from "lucide-react";
-import logo from "../assets/images/Kripin.png";
+﻿import React, { useEffect, useState } from 'react';
+import {
+  ArrowLeft,
+  Check,
+  Delete,
+  LockKeyhole,
+  ShieldCheck,
+  Sparkles,
+} from 'lucide-react';
+import logo from '../assets/images/Kripin.png';
 
 interface PinLockProps {
   onUnlock: () => void;
   isDarkMode: boolean;
 }
 
-const STORAGE_PIN = "kripin_app_pin";
+const STORAGE_PIN = 'kripin_app_pin';
 
 const PinLock: React.FC<PinLockProps> = ({
   onUnlock,
   isDarkMode,
 }) => {
-  const [pin, setPin] = useState("");
-  const [savedPin, setSavedPin] = useState("");
-
-  const [firstTime, setFirstTime] = useState(false);
-  const [confirmMode, setConfirmMode] = useState(false);
-
-  const [firstPin, setFirstPin] = useState("");
-  const [error, setError] = useState("");
+  const [pin, setPin] = useState('');
+  const [savedPin, setSavedPin] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_PIN);
 
     if (stored) {
       setSavedPin(stored);
-    } else {
-      setFirstTime(true);
     }
   }, []);
 
@@ -38,41 +38,12 @@ const PinLock: React.FC<PinLockProps> = ({
       return;
     }
 
-    setError("Incorrect PIN");
+    setError('Incorrect PIN');
 
     setTimeout(() => {
-      setPin("");
-      setError("");
-    }, 800);
-  };
-
-  const savePin = (value: string) => {
-    localStorage.setItem(STORAGE_PIN, value);
-    onUnlock();
-  };
-
-  const createPinFlow = (value: string) => {
-    if (!confirmMode) {
-      setFirstPin(value);
-      setPin("");
-      setConfirmMode(true);
-      return;
-    }
-
-    if (value !== firstPin) {
-      setError("PIN does not match");
-
-      setTimeout(() => {
-        setPin("");
-        setFirstPin("");
-        setConfirmMode(false);
-        setError("");
-      }, 1000);
-
-      return;
-    }
-
-    savePin(value);
+      setPin('');
+      setError('');
+    }, 900);
   };
 
   const pressNumber = (number: string) => {
@@ -81,165 +52,259 @@ const PinLock: React.FC<PinLockProps> = ({
     const newPin = pin + number;
 
     setPin(newPin);
-    setError("");
+    setError('');
 
     if (newPin.length === 4) {
       setTimeout(() => {
-        if (firstTime) {
-          createPinFlow(newPin);
-        } else {
-          verifyPin(newPin);
-        }
-      }, 120);
+        verifyPin(newPin);
+      }, 180);
     }
   };
 
   const removeDigit = () => {
     setPin((prev) => prev.slice(0, -1));
+    setError('');
   };
 
-  const keypad = [
-    "1", "2", "3",
-    "4", "5", "6",
-    "7", "8", "9",
-  ];
+  const handleBack = () => {
+    setPin('');
+    setError('');
+  };
+
+  const keypad = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
   return (
     <div
-      className={`fixed inset-0 flex items-center justify-center p-6 z-[9999] transition-colors duration-300 ${
+      className={`min-h-screen relative overflow-hidden flex items-center justify-center px-4 py-8 sm:px-6 ${
         isDarkMode
-          ? "bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"
-          : "bg-gradient-to-br from-slate-50 via-white to-emerald-50"
+          ? 'bg-slate-950 text-white'
+          : 'bg-slate-100 text-slate-900'
       }`}
     >
-      <div
-        className={`w-full max-w-sm rounded-3xl backdrop-blur-xl p-8 animate-[fadeIn_.35s_ease] transition-colors duration-300 ${
-          isDarkMode
-            ? "bg-slate-900/90 border border-slate-800 shadow-2xl"
-            : "bg-white/90 border border-slate-200 shadow-xl shadow-slate-200/60"
-        } ${error ? "shake" : ""}`}
-      >
-        {/* Logo */}
-        <div className="flex justify-center">
-          <img
-            src={logo}
-            alt="Kripin"
-            className="w-20 h-20 object-contain transition-transform duration-300 hover:scale-110"
-          />
-        </div>
+      {/* Background decoration */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div
+          className={`absolute -top-32 -left-32 w-80 h-80 rounded-full blur-3xl ${
+            isDarkMode
+              ? 'bg-emerald-500/10'
+              : 'bg-emerald-400/20'
+          }`}
+        />
 
-        {/* Heading */}
-        <div className="text-center mt-5">
-          <div className="flex items-center justify-center gap-2">
-            <Lock className="w-6 h-6 text-emerald-500" />
+        <div
+          className={`absolute -bottom-32 -right-32 w-96 h-96 rounded-full blur-3xl ${
+            isDarkMode
+              ? 'bg-cyan-500/10'
+              : 'bg-cyan-400/20'
+          }`}
+        />
+      </div>
 
-            <h2
-              className={`text-2xl font-bold transition-colors ${
-                isDarkMode ? "text-white" : "text-slate-900"
-              }`}
-            >
-              {firstTime
-                ? confirmMode
-                  ? "Confirm PIN"
-                  : "Create PIN"
-                : "Secure Access"}
-            </h2>
-          </div>
-
-          <p
-            className={`text-sm mt-2 transition-colors ${
-              isDarkMode ? "text-slate-400" : "text-slate-500"
+      <div className="relative z-10 w-full max-w-lg">
+        {/* Brand */}
+        <div className="text-center mb-6">
+          <div
+            className={`inline-flex items-center gap-3 px-4 py-2 rounded-2xl border backdrop-blur-md ${
+              isDarkMode
+                ? 'bg-slate-900/70 border-slate-800'
+                : 'bg-white/80 border-slate-200'
             }`}
           >
-            {firstTime
-              ? confirmMode
-                ? "Re-enter your PIN"
-                : "Create your 4-digit PIN"
-              : "Enter your 4-digit PIN"}
-          </p>
-        </div>
+            <div className="w-10 h-10 rounded-xl overflow-hidden">
+              <img
+                src={logo}
+                alt="Kripin"
+                className="w-full h-full object-cover"
+              />
+            </div>
 
-        {/* PIN Dots */}
-        <div className="flex justify-center gap-4 my-8">
-          {[0, 1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className={`w-4 h-4 rounded-full transition-all duration-300 ease-out ${
-                i < pin.length
-                  ? "bg-emerald-500 scale-110 pop shadow-lg shadow-emerald-500/50"
-                  : isDarkMode
-                    ? "bg-slate-700"
-                    : "bg-slate-300"
-              }`}
-            />
-          ))}
-        </div>
+            <p className="text-sm font-extrabold">
+  <span className="text-emerald-500">Kri</span>
+  <span className="text-red-500">pin</span>
+</p>
 
-        {/* Error */}
-        {error && (
-          <p className="text-red-500 text-center text-sm mb-5">
-            {error}
-          </p>
-        )}
-
-        {/* Keypad */}
-        <div className="grid grid-cols-3 gap-4">
-          {keypad.map((item) => (
-            <button
-              key={item}
-              type="button"
-              onClick={() => pressNumber(item)}
-              className={`w-16 h-16 mx-auto rounded-full border
-                hover:bg-emerald-500 hover:border-emerald-400
-                hover:shadow-lg hover:shadow-emerald-500/30
-                active:scale-90
-                transition-all duration-200
-                text-2xl font-bold ${
+              <p
+                className={`text-[10px] font-medium ${
                   isDarkMode
-                    ? "bg-slate-800 border-slate-700 text-white"
-                    : "bg-slate-100 border-slate-200 text-slate-800"
+                    ? 'text-slate-400'
+                    : 'text-slate-500'
                 }`}
+              >
+                Your personal expense diary
+              </p>
+            </div>
+          </div>
+
+        {/* Main Card */}
+        <div
+          className={`rounded-[28px] border shadow-2xl overflow-hidden backdrop-blur-xl ${
+            isDarkMode
+              ? 'bg-slate-900/95 border-slate-800'
+              : 'bg-white/95 border-white shadow-slate-300/40'
+          } ${error ? 'animate-[shake_.3s_ease-in-out]' : ''}`}
+        >
+          {/* Top accent */}
+          <div className="h-1.5 bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400" />
+
+          <div className="p-6 sm:p-9">
+{/* Security label */}
+<div className="flex justify-end mb-7">
+  <div className="text-right">
+    <p
+      className={`text-[10px] font-bold uppercase tracking-[0.18em] ${
+        isDarkMode
+          ? 'text-emerald-400'
+          : 'text-emerald-600'
+      }`}
+    >
+      Security
+    </p>
+
+    <p
+      className={`text-xs mt-1 ${
+        isDarkMode
+          ? 'text-slate-500'
+          : 'text-slate-400'
+      }`}
+    >
+      Secure access
+    </p>
+  </div>
+</div>
+
+            {/* PIN heading */}
+            <div className="text-center mb-7">
+              <div className="relative inline-flex mb-4">
+                <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
+                  {error ? (
+                    <LockKeyhole className="w-8 h-8 text-red-500" />
+                  ) : pin.length === 4 ? (
+                    <Check className="w-8 h-8 text-emerald-500" />
+                  ) : (
+                    <LockKeyhole className="w-8 h-8 text-emerald-500" />
+                  )}
+                </div>
+
+                <div className="absolute -right-2 -top-2 w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center">
+                  <Sparkles className="w-3.5 h-3.5 text-white" />
+                </div>
+              </div>
+
+              <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
+                Secure Access
+              </h1>
+
+              <p
+                className={`text-sm mt-2 ${
+                  isDarkMode
+                    ? 'text-slate-400'
+                    : 'text-slate-500'
+                }`}
+              >
+                Enter your 4-digit PIN
+              </p>
+            </div>
+
+            {/* PIN dots */}
+            <div className="flex justify-center gap-4 mb-7">
+              {[0, 1, 2, 3].map((index) => (
+                <div
+                  key={index}
+                  className={`w-4 h-4 rounded-full transition-all duration-200 ${
+                    index < pin.length
+                      ? 'bg-emerald-500 scale-110 shadow-lg shadow-emerald-500/40'
+                      : isDarkMode
+                        ? 'bg-slate-700'
+                        : 'bg-slate-200'
+                  }`}
+                />
+              ))}
+            </div>
+
+            {/* Error */}
+            <div className="h-6 flex items-center justify-center mb-2">
+              {error && (
+                <p className="text-xs font-bold text-red-500">
+                  {error}
+                </p>
+              )}
+            </div>
+
+            {/* Keypad */}
+            <div className="grid grid-cols-3 gap-3 sm:gap-4 max-w-xs mx-auto">
+              {keypad.map((number) => (
+                <button
+                  key={number}
+                  type="button"
+                  onClick={() => pressNumber(number)}
+                  className={`h-16 sm:h-[68px] rounded-2xl border text-xl font-extrabold transition-all active:scale-90 ${
+                    isDarkMode
+                      ? 'bg-slate-800 border-slate-700 text-white hover:bg-emerald-500 hover:border-emerald-400'
+                      : 'bg-slate-50 border-slate-200 text-slate-800 hover:bg-emerald-500 hover:border-emerald-400 hover:text-white'
+                  }`}
+                >
+                  {number}
+                </button>
+              ))}
+
+              <div />
+
+              {/* Zero */}
+              <button
+                type="button"
+                onClick={() => pressNumber('0')}
+                className={`h-16 sm:h-[68px] rounded-2xl border text-xl font-extrabold transition-all active:scale-90 ${
+                  isDarkMode
+                    ? 'bg-slate-800 border-slate-700 text-white hover:bg-emerald-500 hover:border-emerald-400'
+                    : 'bg-slate-50 border-slate-200 text-slate-800 hover:bg-emerald-500 hover:border-emerald-400 hover:text-white'
+                }`}
+              >
+                0
+              </button>
+
+              {/* Delete */}
+              <button
+                type="button"
+                onClick={removeDigit}
+                className={`h-16 sm:h-[68px] rounded-2xl border flex items-center justify-center transition-all active:scale-90 ${
+                  isDarkMode
+                    ? 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-red-500 hover:border-red-400 hover:text-white'
+                    : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-red-500 hover:border-red-400 hover:text-white'
+                }`}
+              >
+                <Delete className="w-6 h-6" />
+              </button>
+            </div>
+
+            {/* Security message */}
+            <div
+              className={`mt-7 pt-5 border-t flex items-center justify-center gap-2 text-[10px] font-medium ${
+                isDarkMode
+                  ? 'border-slate-800 text-slate-500'
+                  : 'border-slate-100 text-slate-400'
+              }`}
             >
-              {item}
-            </button>
-          ))}
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
 
-          <div />
+              <span>
+                Your PIN is stored securely on this device
+              </span>
+            </div>
 
-          {/* Zero */}
-          <button
-            type="button"
-            onClick={() => pressNumber("0")}
-            className={`w-16 h-16 mx-auto rounded-full border
-              hover:bg-emerald-500 hover:border-emerald-400
-              hover:shadow-lg hover:shadow-emerald-500/30
-              active:scale-90
-              transition-all duration-200
-              text-2xl font-bold ${
-                isDarkMode
-                  ? "bg-slate-800 border-slate-700 text-white"
-                  : "bg-slate-100 border-slate-200 text-slate-800"
-              }`}
-          >
-            0
-          </button>
-
-          {/* Delete */}
-          <button
-            type="button"
-            onClick={removeDigit}
-            className={`group w-16 h-16 mx-auto rounded-full border
-              hover:bg-red-500 hover:border-red-400
-              hover:shadow-lg hover:shadow-red-500/30
-              active:scale-90
-              transition-all duration-200 ${
-                isDarkMode
-                  ? "bg-slate-800 border-slate-700 text-white"
-                  : "bg-slate-100 border-slate-200 text-slate-700"
-              }`}
-          >
-            <Delete className="w-7 h-7 mx-auto transition-transform duration-200 group-hover:scale-110" />
-          </button>
+            {/* Status */}
+            <div className="flex justify-center mt-4">
+              <div
+                className={`flex items-center gap-1.5 text-[10px] font-bold px-3 py-1.5 rounded-full ${
+                  isDarkMode
+                    ? 'bg-emerald-500/10 text-emerald-400'
+                    : 'bg-emerald-50 text-emerald-600'
+                }`}
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                Enter your PIN to continue
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -255,14 +320,14 @@ export const changePin = (
   if (savedPin !== oldPin) {
     return {
       success: false,
-      message: "Current PIN is incorrect",
+      message: 'Current PIN is incorrect',
     };
   }
 
   if (newPin.length !== 4) {
     return {
       success: false,
-      message: "New PIN must be 4 digits",
+      message: 'New PIN must be 4 digits',
     };
   }
 
@@ -270,7 +335,7 @@ export const changePin = (
 
   return {
     success: true,
-    message: "PIN changed successfully",
+    message: 'PIN changed successfully',
   };
 };
 

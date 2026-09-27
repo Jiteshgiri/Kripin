@@ -51,10 +51,10 @@ export interface UserProfile {
 }
 
 export const INITIAL_USER_PROFILE: UserProfile = {
-  name: 'Jitesh',
-  mobile: '+91 9876543210',
-  occupation: 'Job Person / Working Professional',
-  userId: 'JT-2026-8849',
+  name: '',
+  mobile: '',
+  occupation: '',
+  userId: '',
   avatarUrl: '',
 };
 

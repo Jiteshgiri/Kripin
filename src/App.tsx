@@ -1,5 +1,6 @@
 import AboutKripin from './components/AboutKripin';
 import PinLock from './components/PinLock';
+import FirstTimeSetup from './components/FirstTimeSetup';
 import React, { useState, useEffect } from 'react';
 import { LayoutGrid, PieChart, Repeat, Plus, Calculator } from 'lucide-react';
 import { Header } from './components/Header';
@@ -37,15 +38,31 @@ export default function App() {
   });
 
   // User Profile State
-  const [userProfile, setUserProfile] = useState<UserProfile>(() => {
-    const saved = localStorage.getItem('pocketspent_user_profile');
-    if (!saved) return INITIAL_USER_PROFILE;
-    try {
-      return JSON.parse(saved);
-    } catch {
-      return INITIAL_USER_PROFILE;
-    }
-  });
+  // User Profile State
+const [userProfile, setUserProfile] = useState<UserProfile>(() => {
+  const saved = localStorage.getItem('pocketspent_user_profile');
+
+  if (!saved) return INITIAL_USER_PROFILE;
+
+  try {
+    return JSON.parse(saved);
+  } catch {
+    return INITIAL_USER_PROFILE;
+  }
+});
+
+const [isFirstTimeSetup, setIsFirstTimeSetup] = useState(() => {
+  const saved = localStorage.getItem('pocketspent_user_profile');
+
+  if (!saved) return true;
+
+  try {
+    const profile = JSON.parse(saved);
+    return !profile?.name?.trim();
+  } catch {
+    return true;
+  }
+});
 
   // Persistence in localStorage
   const [expenses, setExpenses] = useState<Expense[]>(() => {
@@ -223,6 +240,22 @@ export default function App() {
   const handleDeleteRecurringBill = (id: string) => {
   setRecurringBills((prev) => prev.filter((b) => b.id !== id));
 };
+
+if (isFirstTimeSetup) {
+  return (
+    <FirstTimeSetup
+  key="first-time-setup"
+  isDarkMode={isDarkMode}
+  onComplete={() => {
+    setIsFirstTimeSetup(false);
+    setIsUnlocked(true);
+  }}
+  onBack={() => {
+    setIsFirstTimeSetup(true);
+  }}
+/>
+  );
+}
 
   if (!isUnlocked) {
   return (
