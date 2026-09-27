@@ -1,0 +1,2 @@
+#!/bin/sh
+node .githooks/bump-version.cjs
