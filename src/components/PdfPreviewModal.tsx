@@ -280,10 +280,14 @@ await page.render({
     />
   </div>
 
-  <p className="text-[10px] text-center text-slate-400 flex items-center justify-center gap-1 mt-2">
-    <Sparkles className="w-3 h-3 text-emerald-500" />
-    <span>Preview generated inside Kripin</span>
-  </p>
+  <p
+  className={`text-[10px] text-center flex items-center justify-center gap-1 mt-2 ${
+    isDarkMode ? 'text-slate-400' : 'text-slate-600'
+  }`}
+>
+  <Sparkles className="w-3 h-3 text-emerald-500" />
+  <span>Preview generated inside Kripin</span>
+</p>
 </div>
 
         {/* Modal Footer Actions */}
