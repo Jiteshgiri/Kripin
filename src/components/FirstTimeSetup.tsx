@@ -144,10 +144,10 @@ const FirstTimeSetup: React.FC<FirstTimeSetupProps> = ({
         />
 
         <div
-          className={`absolute -bottom-32 -right-32 w-96 h-96 rounded-full blur-3xl ${
-            isDarkMode ? 'bg-cyan-500/10' : 'bg-cyan-400/20'
-          }`}
-        />
+  className={`absolute -bottom-32 -right-32 w-96 h-96 rounded-full blur-3xl ${
+    isDarkMode ? 'bg-red-500/10' : 'bg-red-400/20'
+  }`}
+/>
       </div>
 
       <div className="relative z-10 w-full max-w-lg">
