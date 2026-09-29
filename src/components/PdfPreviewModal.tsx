@@ -1,13 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import jsPDF from 'jspdf';
-import * as pdfjsLib from 'pdfjs-dist';
+import type jsPDF from 'jspdf';
 import { Download, X, Eye, FileText, Check, Pencil, Sparkles } from 'lucide-react';
 import { UserProfile } from '../types';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
-  import.meta.url
-).toString();
 
 interface PdfPreviewModalProps {
   isOpen: boolean;
@@ -46,7 +41,7 @@ useEffect(() => {
   }
 
   let cancelled = false;
-  let pdfInstance: pdfjsLib.PDFDocumentProxy | null = null;
+  let pdfInstance: import('pdfjs-dist').PDFDocumentProxy | null = null;
   let objectUrl: string | null = null;
 
   const renderPdf = async () => {
@@ -62,9 +57,16 @@ useEffect(() => {
 
       if (cancelled) return;
 
-      const loadingTask = pdfjsLib.getDocument({
-        data: new Uint8Array(arrayBuffer),
-      });
+     const pdfjsLib = await import('pdfjs-dist');
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url
+).toString();
+
+const loadingTask = pdfjsLib.getDocument({
+  data: new Uint8Array(arrayBuffer),
+});
 
       pdfInstance = await loadingTask.promise;
 
