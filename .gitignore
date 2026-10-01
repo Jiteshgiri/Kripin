@@ -22,3 +22,9 @@ dist/
 
 .vercel
 .env*
+
+# APK inspection files
+apk-check/
+apk-check.zip
+apk-final-check/
+apk-final-check.zip
