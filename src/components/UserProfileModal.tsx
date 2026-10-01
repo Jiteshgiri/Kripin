@@ -1,6 +1,6 @@
 import { changePin } from "./PinLock";
 import React, { useState, useRef } from 'react';
-import { X, User, Phone, Briefcase, Hash, RefreshCw, CheckCircle, Camera, Trash2, Upload } from 'lucide-react';
+import { X, User, Phone, Briefcase, Hash, CheckCircle, Camera, Trash2, Upload } from 'lucide-react';
 import { UserProfile } from '../types';
 import { sendProfileToWebhook } from '../utils/telemetry';
 
@@ -22,7 +22,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   const [name, setName] = useState(userProfile.name);
   const [mobile, setMobile] = useState(userProfile.mobile);
   const [occupation, setOccupation] = useState(userProfile.occupation);
-  const [userId, setUserId] = useState(userProfile.userId || `JT-2026-${Math.floor(1000 + Math.random() * 9000)}`);
+  const [userId] = useState(userProfile.userId);
   const [avatarUrl, setAvatarUrl] = useState(userProfile.avatarUrl || '');
   const [currentPin, setCurrentPin] = useState("");
   const [newPin, setNewPin] = useState("");
@@ -31,11 +31,6 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
-
-  const handleRegenerateId = () => {
-    const newId = `JT-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-    setUserId(newId);
-  };
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -66,7 +61,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     name: name.trim(),
     mobile: mobile.trim(),
     occupation: occupation.trim(),
-    userId: userId.trim() || `KR-${Math.floor(100000 + Math.random() * 900000)}`,
+    userId: userId,
     avatarUrl,
   };
 
@@ -192,43 +187,48 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
             </div>
           </div>
 
-          {/* User ID (Auto-generated & Regenerative) */}
-          <div>
-            <label className={`block text-xs font-semibold mb-1.5 ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
-              Member / User ID (Auto-Generated)
-            </label>
-            <div className="flex items-center gap-2">
-              <div
-                className={`flex-1 flex items-center gap-2 px-3.5 py-2 rounded-xl border font-mono text-sm font-bold ${
-                  isDarkMode
-                    ? 'bg-slate-950/80 border-slate-800 text-emerald-400'
-                    : 'bg-slate-100 border-slate-200 text-emerald-600'
-                }`}
-              >
-                <Hash className="w-4 h-4 shrink-0 text-emerald-500" />
-                <input
-                  type="text"
-                  value={userId}
-                  onChange={(e) => setUserId(e.target.value)}
-                  className="bg-transparent border-none outline-none w-full"
-                  placeholder="e.g. JT-2026-8849"
-                />
-              </div>
-              <button
-                type="button"
-                onClick={handleRegenerateId}
-                className={`p-2 rounded-xl border flex items-center justify-center transition-colors ${
-                  isDarkMode
-                    ? 'bg-slate-800 border-slate-700 hover:bg-slate-700 text-slate-300'
-                    : 'bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-700'
-                }`}
-                title="Generate New Unique ID"
-              >
-                <RefreshCw className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
+          {/* User ID (Permanent & Auto-generated) */}
+<div>
+  <label
+    className={`block text-xs font-semibold mb-1.5 ${
+      isDarkMode ? 'text-slate-300' : 'text-slate-700'
+    }`}
+  >
+    Member / User ID (Permanent)
+  </label>
 
+  <div
+    className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border font-mono text-sm font-bold ${
+      isDarkMode
+        ? 'bg-slate-950/80 border-slate-800 text-emerald-400'
+        : 'bg-slate-100 border-slate-200 text-emerald-600'
+    }`}
+  >
+    <Hash className="w-4 h-4 shrink-0 text-emerald-500" />
+
+    <span className="flex-1 select-text">
+      {userId || 'Not Available'}
+    </span>
+
+    <span
+      className={`text-[10px] font-sans font-semibold px-2 py-1 rounded-lg ${
+        isDarkMode
+          ? 'bg-emerald-500/10 text-emerald-400'
+          : 'bg-emerald-50 text-emerald-600'
+      }`}
+    >
+      LOCKED
+    </span>
+  </div>
+
+  <p
+    className={`mt-1.5 text-[10px] ${
+      isDarkMode ? 'text-slate-500' : 'text-slate-400'
+    }`}
+  >
+    This ID is permanent and cannot be changed.
+  </p>
+</div>
           {/* Full Name */}
           <div>
             <label className={`block text-xs font-semibold mb-1.5 ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>

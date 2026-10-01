@@ -4,6 +4,7 @@ export interface Expense {
   amount: number;
   category: string;
   dateTimestamp: number;
+  createdAt?: number;
   isIncome: boolean;
   merchant: string;
   paymentMode: string;

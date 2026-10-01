@@ -7,13 +7,13 @@ const packageJson = JSON.parse(
   fs.readFileSync(packagePath, 'utf8')
 );
 
-const [major, minor, patch] = packageJson.version
+const [major, minor] = packageJson.version
   .split('.')
   .map(Number);
 
-const nextMinor = minor + 1;
+const nextVersion = `${major}.${minor + 1}.0`;
 
-packageJson.version = `${major}.${nextMinor}.0`;
+packageJson.version = nextVersion;
 
 fs.writeFileSync(
   packagePath,
@@ -22,4 +22,4 @@ fs.writeFileSync(
 
 execSync('git add package.json');
 
-console.log(`\nKripin version bumped to ${major}.${nextMinor}\n`);
+console.log(`Kripin version bumped automatically: ${packageJson.version}`);

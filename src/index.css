@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base {
   body {
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
@@ -30,15 +32,19 @@
   0%, 100% {
     transform: translateX(0);
   }
+
   20% {
     transform: translateX(-6px);
   }
+
   40% {
     transform: translateX(6px);
   }
+
   60% {
     transform: translateX(-6px);
   }
+
   80% {
     transform: translateX(6px);
   }
@@ -53,9 +59,11 @@
   0% {
     transform: scale(0.7);
   }
+
   70% {
     transform: scale(1.2);
   }
+
   100% {
     transform: scale(1);
   }

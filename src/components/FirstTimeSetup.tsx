@@ -40,10 +40,23 @@ const FirstTimeSetup: React.FC<FirstTimeSetupProps> = ({
   const [confirmMode, setConfirmMode] = useState(false);
   const [error, setError] = useState('');
 
-  const generateUserId = () => {
-    return `KR-${Math.floor(100000 + Math.random() * 900000)}`;
-  };
+const getPermanentUserId = () => {
+  const savedProfile = localStorage.getItem(STORAGE_PROFILE);
 
+  if (savedProfile) {
+    try {
+      const parsedProfile = JSON.parse(savedProfile);
+
+      if (parsedProfile?.userId?.trim()) {
+        return parsedProfile.userId;
+      }
+    } catch {
+      // Ignore invalid saved profile
+    }
+  }
+
+  return `KR-${Math.floor(100000 + Math.random() * 900000)}`;
+};
   const handleContinueToPin = () => {
     const trimmedName = name.trim();
 
@@ -88,7 +101,7 @@ const FirstTimeSetup: React.FC<FirstTimeSetupProps> = ({
             name: name.trim(),
             mobile: mobile.trim(),
             occupation: occupation.trim(),
-            userId: generateUserId(),
+            userId: getPermanentUserId(),
             avatarUrl: '',
           };
 

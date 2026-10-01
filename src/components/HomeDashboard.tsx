@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Calendar,
   Download,
@@ -73,84 +73,180 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
   rent: House,
   other: Package,
 };
-  // Currently selected month (YYYY-MM string, default current month)
+  // Currently selected month (YYYY-MM)
+  // Default: current month
   const [selectedMonthKey, setSelectedMonthKey] = useState(() => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
   });
 
-  // Calculate Running Balance across all transactions in chronological order (oldest to newest)
-  const sortedAllTransactions = [...expenses].sort((a, b) => {
-    if (a.dateTimestamp !== b.dateTimestamp) {
-      return a.dateTimestamp - b.dateTimestamp;
-    }
-    // On the same timestamp/date, prioritize Income first so balance credits before debiting
-    if (a.isIncome !== b.isIncome) {
-      return a.isIncome ? -1 : 1;
-    }
-    return 0;
-  });
+  // Calculate Running Balance across all transactions
+  const sortedAllTransactions = [...expenses]
+    .filter(
+      (tx) =>
+        Number.isFinite(Number(tx.amount)) &&
+        Number.isFinite(Number(tx.dateTimestamp))
+    )
+    .sort((a, b) => {
+      if (a.dateTimestamp !== b.dateTimestamp) {
+        return a.dateTimestamp - b.dateTimestamp;
+      }
+
+      if (a.isIncome !== b.isIncome) {
+        return a.isIncome ? -1 : 1;
+      }
+
+      return 0;
+    });
 
   let cumulativeBalance = 0;
-  const transactionsWithRunningBalance = sortedAllTransactions.map((tx) => {
-    if (tx.isIncome) {
-      cumulativeBalance += tx.amount;
-    } else {
-      cumulativeBalance -= tx.amount;
-    }
-    return {
-      ...tx,
-      runningBalance: cumulativeBalance,
-    };
-  });
 
-  // Get list of available unique months for dropdown (current month + past 24 months + any expense months)
+  const transactionsWithRunningBalance =
+    sortedAllTransactions.map((tx) => {
+      const amount = Number(tx.amount);
+
+      if (tx.isIncome) {
+        cumulativeBalance += amount;
+      } else {
+        cumulativeBalance -= amount;
+      }
+
+      return {
+        ...tx,
+        amount,
+        runningBalance: cumulativeBalance,
+      };
+    });
+
+  // Get available months
   const availableMonthsMap = new Map<string, string>();
   const now = new Date();
 
   for (let i = 0; i < 24; i++) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-    const label = d.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+    const d = new Date(
+      now.getFullYear(),
+      now.getMonth() - i,
+      1
+    );
+
+    const key =
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+
+    const label = d.toLocaleDateString('en-IN', {
+      month: 'long',
+      year: 'numeric',
+    });
+
     availableMonthsMap.set(key, label);
   }
 
-  expenses.forEach((e) => {
+  // Add every transaction month to the month picker
+  transactionsWithRunningBalance.forEach((e) => {
     const dateObj = new Date(e.dateTimestamp);
-    const key = `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
-    const label = dateObj.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+
+    if (Number.isNaN(dateObj.getTime())) {
+      return;
+    }
+
+    const key =
+      `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+
+    const label = dateObj.toLocaleDateString('en-IN', {
+      month: 'long',
+      year: 'numeric',
+    });
+
     availableMonthsMap.set(key, label);
   });
 
-  const monthOptions = Array.from(availableMonthsMap.entries()).sort(
-    (a, b) => b[0].localeCompare(a[0]) // newest month first
-  );
+  const monthOptions = Array.from(
+    availableMonthsMap.entries()
+  ).sort((a, b) => b[0].localeCompare(a[0]));
+
+  // If the currently selected month has no transaction,
+  // automatically move to the latest transaction month.
+  useEffect(() => {
+    if (transactionsWithRunningBalance.length === 0) {
+      return;
+    }
+
+    const selectedMonthHasTransactions =
+      transactionsWithRunningBalance.some((tx) => {
+        const d = new Date(tx.dateTimestamp);
+
+        if (Number.isNaN(d.getTime())) {
+          return false;
+        }
+
+        const key =
+          `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+
+        return key === selectedMonthKey;
+      });
+
+    if (selectedMonthHasTransactions) {
+      return;
+    }
+
+    const latestTransaction =
+      transactionsWithRunningBalance[
+        transactionsWithRunningBalance.length - 1
+      ];
+
+    const latestDate = new Date(
+      latestTransaction.dateTimestamp
+    );
+
+    if (Number.isNaN(latestDate.getTime())) {
+      return;
+    }
+
+    const latestMonthKey =
+      `${latestDate.getFullYear()}-${String(
+        latestDate.getMonth() + 1
+      ).padStart(2, '0')}`;
+
+    setSelectedMonthKey(latestMonthKey);
+  }, [expenses, selectedMonthKey]);
 
   // Filter transactions for selected month
-  const monthTransactions = transactionsWithRunningBalance.filter((tx) => {
-    const d = new Date(tx.dateTimestamp);
-    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-    return key === selectedMonthKey;
-  });
+  const monthTransactions =
+    transactionsWithRunningBalance.filter((tx) => {
+      const d = new Date(tx.dateTimestamp);
 
-  // Reverse monthTransactions so newest transaction in the month is at top for viewing
-  const displayTransactions = [...monthTransactions].reverse();
+      if (Number.isNaN(d.getTime())) {
+        return false;
+      }
 
-  // Monthly stats
+      const key =
+        `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+
+      return key === selectedMonthKey;
+    });
+
+  // Newest transaction first
+  const displayTransactions =
+    [...monthTransactions].reverse();
+
+  // Monthly income
   const totalMonthlyIncome = monthTransactions
     .filter((t) => t.isIncome)
-    .reduce((sum, t) => sum + t.amount, 0);
+    .reduce((sum, t) => sum + Number(t.amount), 0);
 
+  // Monthly expense
   const totalMonthlyExpense = monthTransactions
     .filter((t) => !t.isIncome)
-    .reduce((sum, t) => sum + t.amount, 0);
+    .reduce((sum, t) => sum + Number(t.amount), 0);
 
-    // Category Spending & Budget Calculations for Selected Month
+  // Category spending
   const monthExpenseMap: Record<string, number> = {};
+
   monthTransactions
     .filter((t) => !t.isIncome)
     .forEach((t) => {
-      monthExpenseMap[t.category] = (monthExpenseMap[t.category] || 0) + t.amount;
+      monthExpenseMap[t.category] =
+        (monthExpenseMap[t.category] || 0) +
+        Number(t.amount);
     });
 
   const categoryStatuses = calculateCategoryStatuses(
@@ -158,7 +254,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
     budgetConfig.categoryBudgets || DEFAULT_CATEGORY_BUDGETS
   );
 
-  // Total balance overall across all history
+  // Overall balance across all transactions
   const overallTotalBalance = cumulativeBalance;
 
   // Selected Month Display Name
@@ -232,7 +328,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
             isDarkMode ? 'text-slate-400' : 'text-slate-500'
           }`}>
             <Wallet className="w-4 h-4 text-emerald-500" />
-            Current Balance
+            Current Balance - OTA 1.6
           </span>
 
           {/* Colorful Month Picker with Popup Calendar Grid & Arrows */}
@@ -531,3 +627,5 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
 </div>
 );
 };
+
+

@@ -1,3 +1,9 @@
+import {
+  initializeCloudSync,
+  syncUserProfile,
+  syncTransaction,
+} from './utils/cloudSync';
+import { checkForLiveUpdate } from './utils/liveUpdate';
 import AboutKripin from './components/AboutKripin';
 import PinLock from './components/PinLock';
 import FirstTimeSetup from './components/FirstTimeSetup';
@@ -118,9 +124,20 @@ const [isFirstTimeSetup, setIsFirstTimeSetup] = useState(() => {
   const [isCalculatorOpen, setIsCalculatorOpen] = useState(false);
   const [isCalculatorMinimized, setIsCalculatorMinimized] = useState(false);
 
-  useEffect(() => {
-    localStorage.setItem('pocketspent_user_profile', JSON.stringify(userProfile));
-  }, [userProfile]);
+useEffect(() => {
+  localStorage.setItem(
+    'pocketspent_user_profile',
+    JSON.stringify(userProfile)
+  );
+
+  void syncUserProfile({
+    userId: userProfile.userId,
+    name: userProfile.name,
+    mobile: userProfile.mobile,
+    occupation: userProfile.occupation,
+    avatarUrl: userProfile.avatarUrl,
+  });
+}, [userProfile]);
 
   useEffect(() => {
     localStorage.setItem('pocketspent_theme', JSON.stringify(isDarkMode));
@@ -143,6 +160,13 @@ const [isFirstTimeSetup, setIsFirstTimeSetup] = useState(() => {
     localStorage.setItem('pocketspent_budget', JSON.stringify(budgetConfig));
   }, [budgetConfig]);
 
+  useEffect(() => {
+  void checkForLiveUpdate();
+}, []);
+
+useEffect(() => {
+  initializeCloudSync();
+}, []);
   // Expense Handlers
   const handleOpenAddModal = () => {
     setEditingExpense(null);
@@ -181,18 +205,33 @@ const [isFirstTimeSetup, setIsFirstTimeSetup] = useState(() => {
       setEditingExpense(null);
     } else {
       // Add new expense
-      const newExpense: Expense = {
-        id: `tx_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
-        title,
-        amount,
-        category,
-        dateTimestamp: dateTimestamp || Date.now(),
-        isIncome,
-        merchant: title,
-        paymentMode: 'Manual Entry',
-      };
-      setExpenses((prev) => [newExpense, ...prev]);
-    }
+const newExpense: Expense = {
+  id: `tx_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+  title,
+  amount,
+  category,
+  dateTimestamp: dateTimestamp || Date.now(),
+  createdAt: Date.now(),
+  isIncome,
+  merchant: title,
+  paymentMode: 'Manual Entry',
+};
+
+setExpenses((prev) => [newExpense, ...prev]);
+
+void syncTransaction({
+  id: newExpense.id,
+  userId: userProfile.userId,
+  title: newExpense.title,
+  amount: newExpense.amount,
+  category: newExpense.category,
+  dateTimestamp: newExpense.dateTimestamp,
+  createdAt: newExpense.createdAt,
+  isIncome: newExpense.isIncome,
+  merchant: newExpense.merchant,
+  paymentMode: newExpense.paymentMode,
+});
+}
   };
 
   const handleDeleteExpense = (id: string) => {
@@ -477,4 +516,4 @@ return (
       />
     </div>
   );
-}
+    }

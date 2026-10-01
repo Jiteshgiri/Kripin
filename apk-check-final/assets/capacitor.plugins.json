@@ -1,0 +1,10 @@
+[
+	{
+		"pkg": "@capacitor/filesystem",
+		"classpath": "com.capacitorjs.plugins.filesystem.FilesystemPlugin"
+	},
+	{
+		"pkg": "@capawesome/capacitor-live-update",
+		"classpath": "io.capawesome.capacitorjs.plugins.liveupdate.LiveUpdatePlugin"
+	}
+]

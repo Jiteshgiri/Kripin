@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Kripin</string>
+    <string name="title_activity_main">Kripin</string>
+    <string name="package_name">com.kripin.app</string>
+    <string name="custom_url_scheme">com.kripin.app</string>
+</resources>

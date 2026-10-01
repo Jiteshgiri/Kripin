@@ -1,0 +1,8 @@
+node_modules
+android
+app
+app-backup
+dist
+.git
+*.apk
+*.aab
