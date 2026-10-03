@@ -1,3 +1,5 @@
+import { Capacitor } from '@capacitor/core';
+import { Filesystem, Directory } from '@capacitor/filesystem';
 import React, { useState, useEffect, useRef } from 'react';
 import type jsPDF from 'jspdf';
 import { Download, X, Eye, FileText, Check, Pencil, Sparkles } from 'lucide-react';
@@ -174,15 +176,35 @@ await page.render({
 
   const fileName = `Expense_Report_${monthLabel.replace(/[\s,]+/g, '_')}.pdf`;
 
-  const handleTriggerDownload = () => {
-    setIsDownloading(true);
-    setTimeout(() => {
+  const handleTriggerDownload = async () => {
+  setIsDownloading(true);
+
+  try {
+    if (Capacitor.isNativePlatform()) {
+      const pdfBase64 = pdfDoc.output('datauristring').split(',')[1];
+
+      await Filesystem.writeFile({
+        path: `Kripin/${fileName}`,
+        data: pdfBase64,
+        directory: Directory.Documents,
+        recursive: true,
+      });
+    } else {
       pdfDoc.save(fileName);
-      setIsDownloading(false);
-      setDownloadSuccess(true);
-      setTimeout(() => setDownloadSuccess(false), 2500);
-    }, 200);
-  };
+    }
+
+    setDownloadSuccess(true);
+
+    setTimeout(() => {
+      setDownloadSuccess(false);
+    }, 2500);
+  } catch (error) {
+    console.error('[Kripin PDF] Download failed:', error);
+    alert('PDF save failed. Please try again.');
+  } finally {
+    setIsDownloading(false);
+  }
+};
 
   const netBalance = totalIncome - totalExpense;
 
