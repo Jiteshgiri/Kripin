@@ -22,9 +22,9 @@ import {
   House,
   Package,
 } from 'lucide-react';
-import jsPDF from 'jspdf';
+import type jsPDF from 'jspdf';
 import { Expense, SmsAlert, CATEGORIES, UserProfile, BudgetConfig, DEFAULT_CATEGORY_BUDGETS } from '../types';
-import { buildMonthlyPdfDoc, PdfTransactionItem } from '../utils/pdfGenerator';
+import type { PdfTransactionItem } from '../utils/pdfGenerator';
 import { calculateCategoryStatuses } from '../utils/budgetUtils';
 import { ColorfulMonthPicker } from './ColorfulMonthPicker';
 import { PdfPreviewModal } from './PdfPreviewModal';
@@ -75,10 +75,18 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
 };
   // Currently selected month (YYYY-MM)
   // Default: current month
-  const [selectedMonthKey, setSelectedMonthKey] = useState(() => {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-  });
+  const getCurrentMonthKey = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+};
+
+const [selectedMonthKey, setSelectedMonthKey] = useState(() => {
+  return sessionStorage.getItem('selectedMonthKey') || getCurrentMonthKey();
+});
+
+useEffect(() => {
+  sessionStorage.setItem('selectedMonthKey', selectedMonthKey);
+}, [selectedMonthKey]);
 
   // Calculate Running Balance across all transactions
   const sortedAllTransactions = [...expenses]
@@ -163,52 +171,8 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
     availableMonthsMap.entries()
   ).sort((a, b) => b[0].localeCompare(a[0]));
 
-  // If the currently selected month has no transaction,
-  // automatically move to the latest transaction month.
-  useEffect(() => {
-    if (transactionsWithRunningBalance.length === 0) {
-      return;
-    }
-
-    const selectedMonthHasTransactions =
-      transactionsWithRunningBalance.some((tx) => {
-        const d = new Date(tx.dateTimestamp);
-
-        if (Number.isNaN(d.getTime())) {
-          return false;
-        }
-
-        const key =
-          `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-
-        return key === selectedMonthKey;
-      });
-
-    if (selectedMonthHasTransactions) {
-      return;
-    }
-
-    const latestTransaction =
-      transactionsWithRunningBalance[
-        transactionsWithRunningBalance.length - 1
-      ];
-
-    const latestDate = new Date(
-      latestTransaction.dateTimestamp
-    );
-
-    if (Number.isNaN(latestDate.getTime())) {
-      return;
-    }
-
-    const latestMonthKey =
-      `${latestDate.getFullYear()}-${String(
-        latestDate.getMonth() + 1
-      ).padStart(2, '0')}`;
-
-    setSelectedMonthKey(latestMonthKey);
-  }, [expenses, selectedMonthKey]);
-
+  // Keep the user's manually selected month.
+  // Do not automatically reset to the latest transaction month.
   // Filter transactions for selected month
   const monthTransactions =
     transactionsWithRunningBalance.filter((tx) => {
@@ -279,7 +243,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
   });
 
   // PDF Export Handler - Opens Preview Modal First
-  const handleExportPdf = () => {
+  const handleExportPdf = async () => {
     const pdfItems: PdfTransactionItem[] = monthTransactions.map((t) => ({
       dateStr: new Date(t.dateTimestamp).toLocaleDateString('en-IN', {
         day: '2-digit',
@@ -293,6 +257,7 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
       category: t.category,
     }));
 
+    const { buildMonthlyPdfDoc } = await import('../utils/pdfGenerator');
     const doc = buildMonthlyPdfDoc(
       selectedMonthLabel,
       totalMonthlyIncome,
@@ -468,17 +433,21 @@ export const HomeDashboard: React.FC<HomeDashboardProps> = ({
       {/* 3. Chronological Transactions History */}
       <div className="space-y-3 pt-1">
         <div className="flex items-center justify-between px-1">
-          <h3
-            className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${
-              isDarkMode ? 'text-slate-300' : 'text-slate-700'
-            }`}
-          >
-            <FileText className="w-4 h-4 text-emerald-500" />
-            <span>{selectedMonthLabel} History</span>
-            <span className={`text-[11px] font-normal ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
-              ({displayTransactions.length} entries)
-            </span>
-          </h3>
+<h3
+  className={`text-xs font-bold uppercase tracking-wider flex items-center gap-2 ${
+    isDarkMode ? 'text-slate-300' : 'text-slate-700'
+  }`}
+>
+  <FileText className="w-4 h-4 text-emerald-500" />
+  <span>{selectedMonthLabel} History</span>
+  <span
+    className={`text-[11px] font-normal whitespace-nowrap ${
+      isDarkMode ? 'text-slate-400' : 'text-slate-500'
+    }`}
+  >
+    ({displayTransactions.length} entries)
+  </span>
+</h3>
 
           <button
             onClick={handleExportPdf}

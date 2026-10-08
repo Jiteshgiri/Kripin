@@ -13,9 +13,9 @@ import {
   House,
   Package,
 } from 'lucide-react';
-import jsPDF from 'jspdf';
+import type jsPDF from 'jspdf';
 import { Expense, CATEGORIES, UserProfile, BudgetConfig } from '../types';
-import { buildMonthlyPdfDoc, PdfTransactionItem } from '../utils/pdfGenerator';
+import type { PdfTransactionItem } from '../utils/pdfGenerator';
 import { ColorfulMonthPicker } from './ColorfulMonthPicker';
 import { PdfPreviewModal } from './PdfPreviewModal';
 
@@ -124,7 +124,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
     transactionCount: 0,
   });
 
-  const handleDownloadPdf = () => {
+  const handleDownloadPdf = async () => {
     // Sort selected month expenses chronologically
     const sortedAll = [...monthExpenses].sort((a, b) => {
       if (a.dateTimestamp !== b.dateTimestamp) {
@@ -166,6 +166,7 @@ export const AnalyticsView: React.FC<AnalyticsViewProps> = ({
       percentage: seg.pct,
     }));
 
+    const { buildMonthlyPdfDoc } = await import('../utils/pdfGenerator');
     const doc = buildMonthlyPdfDoc(
   selectedMonthLabel,
   totalInc,

@@ -15,7 +15,7 @@ import logo from '../assets/images/Kripin.png';
 import { UserProfile } from '../types';
 
 interface FirstTimeSetupProps {
-  onComplete: () => void;
+  onComplete: (profile: UserProfile) => void;
   onBack: () => void;
   isDarkMode: boolean;
 }
@@ -108,7 +108,7 @@ const getPermanentUserId = () => {
           localStorage.setItem(STORAGE_PROFILE, JSON.stringify(profile));
           localStorage.setItem(STORAGE_PIN, newPin);
 
-          onComplete();
+          onComplete(profile);
         }
       }, 180);
     }
@@ -384,17 +384,61 @@ const getPermanentUserId = () => {
                         }`}
                       />
 
-                      <input
-                        type="text"
+                      <select
                         value={occupation}
                         onChange={(e) => setOccupation(e.target.value)}
-                        placeholder="e.g. Student, Developer, Business"
-                        className={`w-full h-12 rounded-xl border pl-10 pr-4 text-sm outline-none transition-all ${
+                        className={`w-full h-12 rounded-xl border pl-10 pr-4 text-sm outline-none transition-all appearance-none cursor-pointer ${
                           isDarkMode
-                            ? 'bg-slate-800 border-slate-700 text-white placeholder:text-slate-500 focus:border-emerald-500'
-                            : 'bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-emerald-500'
+                            ? 'bg-slate-800 border-slate-700 text-white focus:border-emerald-500'
+                            : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-emerald-500'
                         }`}
-                      />
+                      >
+                        <option value="" className={isDarkMode ? 'bg-slate-900' : ''}>
+                          Select occupation
+                        </option>
+                        <option value="Student" className={isDarkMode ? 'bg-slate-900' : ''}>
+                          Student
+                        </option>
+                        <option value="Working Professional" className={isDarkMode ? 'bg-slate-900' : ''}>
+                          Working Professional
+                        </option>
+                        <option value="Government Employee" className={isDarkMode ? 'bg-slate-900' : ''}>
+                          Government Employee
+                        </option>
+                        <option value="Business / Entrepreneur" className={isDarkMode ? 'bg-slate-900' : ''}>
+                          Business / Entrepreneur
+                        </option>
+                        <option value="Freelancer / Self-Employed" className={isDarkMode ? 'bg-slate-900' : ''}>
+                          Freelancer / Self-Employed
+                        </option>
+                        <option value="Homemaker" className={isDarkMode ? 'bg-slate-900' : ''}>
+                          Homemaker
+                        </option>
+                        <option value="Teacher / Professor" className={isDarkMode ? 'bg-slate-900' : ''}>
+                          Teacher / Professor
+                        </option>
+                        <option value="Healthcare Professional" className={isDarkMode ? 'bg-slate-900' : ''}>
+                          Healthcare Professional
+                        </option>
+                        <option value="Consultant / Professional" className={isDarkMode ? 'bg-slate-900' : ''}>
+                          Consultant / Professional
+                        </option>
+                        <option value="Creator / Content Creator" className={isDarkMode ? 'bg-slate-900' : ''}>
+                          Creator / Content Creator
+                        </option>
+                        <option value="Intern / Trainee" className={isDarkMode ? 'bg-slate-900' : ''}>
+                          Intern / Trainee
+                        </option>
+                        <option value="Retired" className={isDarkMode ? 'bg-slate-900' : ''}>
+                          Retired
+                        </option>
+                        <option value="Unemployed / Looking for Work" className={isDarkMode ? 'bg-slate-900' : ''}>
+                          Unemployed / Looking for Work
+                        </option>
+                        <option value="Other" className={isDarkMode ? 'bg-slate-900' : ''}>
+                          Other
+                        </option>
+                      </select>
                     </div>
                   </div>
 

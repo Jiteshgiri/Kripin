@@ -34,17 +34,36 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        alert('File size is too large. Please select an image under 2MB.');
-        return;
-      }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setAvatarUrl(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('Please select a valid image file.');
+      e.target.value = '';
+      return;
     }
+
+    if (file.size > 2 * 1024 * 1024) {
+      alert('File size is too large. Please select an image under 2MB.');
+      e.target.value = '';
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const result = reader.result;
+
+      if (typeof result === 'string' && result.startsWith('data:image/')) {
+        setAvatarUrl(result);
+      }
+    };
+
+    reader.onerror = () => {
+      alert('Unable to read this image. Please try another photo.');
+    };
+
+    reader.readAsDataURL(file);
   };
 
   const handleRemovePhoto = () => {
@@ -64,6 +83,11 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     userId: userId,
     avatarUrl,
   };
+
+  localStorage.setItem(
+    'pocketspent_user_profile',
+    JSON.stringify(updatedProfile)
+  );
 
   onSaveProfile(updatedProfile);
   sendProfileToWebhook(updatedProfile);

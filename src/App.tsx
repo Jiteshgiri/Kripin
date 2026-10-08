@@ -3,23 +3,23 @@ import {
   syncUserProfile,
   syncTransaction,
 } from './utils/cloudSync';
-import { checkForLiveUpdate } from './utils/liveUpdate';
-import AboutKripin from './components/AboutKripin';
 import PinLock from './components/PinLock';
 import FirstTimeSetup from './components/FirstTimeSetup';
-import React, { useState, useEffect } from 'react';
+import React, { lazy, Suspense, useState, useEffect } from 'react';
 import { LayoutGrid, PieChart, Repeat, Plus, Calculator } from 'lucide-react';
 import { Header } from './components/Header';
 import { HomeDashboard } from './components/HomeDashboard';
-import { AnalyticsView } from './components/AnalyticsView';
-import { RecurringBillsView } from './components/RecurringBillsView';
-import { QuickAddModal } from './components/QuickAddModal';
-import { MiniCalculator } from './components/MiniCalculator';
-import { SmsSimulatorModal } from './components/SmsSimulatorModal';
-import { BudgetSettingsModal } from './components/BudgetSettingsModal';
-import { UserProfileModal } from './components/UserProfileModal';
+
+const AboutKripin = lazy(() => import('./components/AboutKripin'));
+const AnalyticsView = lazy(() => import('./components/AnalyticsView').then(m => ({ default: m.AnalyticsView })));
+const RecurringBillsView = lazy(() => import('./components/RecurringBillsView').then(m => ({ default: m.RecurringBillsView })));
+const QuickAddModal = lazy(() => import('./components/QuickAddModal').then(m => ({ default: m.QuickAddModal })));
+const MiniCalculator = lazy(() => import('./components/MiniCalculator').then(m => ({ default: m.MiniCalculator })));
+const SmsSimulatorModal = lazy(() => import('./components/SmsSimulatorModal').then(m => ({ default: m.SmsSimulatorModal })));
+const BudgetSettingsModal = lazy(() => import('./components/BudgetSettingsModal').then(m => ({ default: m.BudgetSettingsModal })));
+const UserProfileModal = lazy(() => import('./components/UserProfileModal').then(m => ({ default: m.UserProfileModal })));
 import { Expense, RecurringBill, BudgetConfig, SmsAlert, UserProfile, INITIAL_USER_PROFILE, DEFAULT_CATEGORY_BUDGETS } from './types';
-import { initTelemetry, trackPageView, trackGAEvent, sendProfileToWebhook } from './utils/telemetry';
+
 
 // Initial Seed Data (Empty for clean user entry)
 const INITIAL_EXPENSES: Expense[] = [];
@@ -160,10 +160,6 @@ useEffect(() => {
     localStorage.setItem('pocketspent_budget', JSON.stringify(budgetConfig));
   }, [budgetConfig]);
 
-  useEffect(() => {
-  void checkForLiveUpdate();
-}, []);
-
 useEffect(() => {
   initializeCloudSync();
 }, []);
@@ -285,7 +281,8 @@ if (isFirstTimeSetup) {
     <FirstTimeSetup
   key="first-time-setup"
   isDarkMode={isDarkMode}
-  onComplete={() => {
+  onComplete={(profile) => {
+    setUserProfile(profile);
     setIsFirstTimeSetup(false);
     setIsUnlocked(true);
   }}
@@ -307,10 +304,12 @@ if (isFirstTimeSetup) {
 
 if (isAboutOpen) {
   return (
-    <AboutKripin
-  onBack={() => setIsAboutOpen(false)} 
-  isDarkMode={isDarkMode}
-/>
+    <Suspense fallback={<div className="min-h-screen bg-slate-950" />}>
+      <AboutKripin
+        onBack={() => setIsAboutOpen(false)}
+        isDarkMode={isDarkMode}
+      />
+    </Suspense>
   );
 }
 
@@ -360,6 +359,7 @@ return (
             )}
 
             {activeTab === 'analytics' && (
+              <Suspense fallback={<div className="py-12 text-center text-sm opacity-60">Loading analytics…</div>}>
               <AnalyticsView
                 expenses={expenses}
                 monthlyBudget={budgetConfig.monthlyBudget}
@@ -367,9 +367,11 @@ return (
                 userProfile={userProfile}
                 isDarkMode={isDarkMode}
               />
+              </Suspense>
             )}
 
             {activeTab === 'recurring' && (
+              <Suspense fallback={<div className="py-12 text-center text-sm opacity-60">Loading…</div>}>
               <RecurringBillsView
                 bills={recurringBills}
                 onTogglePaid={handleToggleBillPaid}
@@ -377,13 +379,14 @@ return (
                 onDeleteBill={handleDeleteRecurringBill}
                 isDarkMode={isDarkMode}
               />
+              </Suspense>
             )}
 
             {/* In-App Footer */}
             <footer className={`text-center py-4 text-[11px] font-semibold border-t mt-6 transition-colors ${
               isDarkMode ? 'border-slate-800/80 text-slate-500' : 'border-slate-200/80 text-slate-400'
             }`}>
-              Created by Jitesh | Powered by JTech Labs
+              Jitesh | <span className="text-red-500">J</span>Tech Labs
             </footer>
           </main>
 
@@ -471,6 +474,7 @@ return (
       </div>
 
       {/* Modals */}
+      <Suspense fallback={null}>
       <QuickAddModal
         isOpen={isQuickAddOpen}
         editingExpense={editingExpense}
@@ -499,10 +503,17 @@ return (
       />
 
       <UserProfileModal
+        key={`${userProfile.userId}-${userProfile.name}-${userProfile.mobile}-${userProfile.occupation}-${userProfile.avatarUrl}`}
         isOpen={isUserProfileOpen}
         userProfile={userProfile}
         onClose={() => setIsUserProfileOpen(false)}
-        onSaveProfile={(newProf) => setUserProfile(newProf)}
+        onSaveProfile={(newProf) => {
+          localStorage.setItem(
+            'pocketspent_user_profile',
+            JSON.stringify(newProf)
+          );
+          setUserProfile(newProf);
+        }}
         isDarkMode={isDarkMode}
       />
 
@@ -514,6 +525,7 @@ return (
         onRestore={() => setIsCalculatorMinimized(false)}
         isDarkMode={isDarkMode}
       />
+      </Suspense>
     </div>
   );
     }

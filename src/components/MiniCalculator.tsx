@@ -115,6 +115,7 @@ export const MiniCalculator: React.FC<MiniCalculatorProps> = ({
 
   const handleOperator = (op: string) => {
     setIsEvaluated(false);
+
     if (!expression && displayValue === '0' && op === '-') {
       setExpression('-');
       setDisplayValue('-');
@@ -123,22 +124,27 @@ export const MiniCalculator: React.FC<MiniCalculatorProps> = ({
 
     if (!expression) {
       setExpression(displayValue + ' ' + op + ' ');
+      setDisplayValue('0');
       return;
     }
 
     // Check if last char is an operator, replace it
     const trimmed = expression.trim();
     const lastChar = trimmed.slice(-1);
+
     if (['+', '-', '×', '÷'].includes(lastChar)) {
-      setExpression(trimmed.slice(0, -1).trim() + ' ' + op + ' ');
-    } else {
-      // Evaluate running sum preview if desired
-      const currentRes = evaluateMath(expression);
-      if (currentRes !== null) {
-        setDisplayValue(String(currentRes));
-      }
-      setExpression(expression + ' ' + op + ' ');
+      setExpression(
+        trimmed.slice(0, -1).trim() + ' ' + op + ' '
+      );
+      setDisplayValue('0');
+      return;
     }
+
+    // Add operator and start fresh input for the next number.
+    // The full expression stays visible above, while the main
+    // display shows only the number currently being entered.
+    setExpression(expression + ' ' + op + ' ');
+    setDisplayValue('0');
   };
 
   const handleEqual = () => {

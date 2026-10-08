@@ -28,3 +28,13 @@ apk-check/
 apk-check.zip
 apk-final-check/
 apk-final-check.zip
+
+# Local Git safety backups
+/.git-temp-backup/
+/.git-temp-old/
+
+# Local Android signing config
+android/app/keystore.properties
+
+# Local source backups
+backup/

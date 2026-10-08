@@ -1,6 +1,9 @@
 const CLOUD_SYNC_CUTOFF_KEY = 'kripin_cloud_sync_started_at';
 
-const API_BASE_URL = 'http://localhost:3001';
+// Local-only sync: Android localhost points to the phone itself.
+// Set VITE_LOCAL_SERVER_URL to the PC's LAN address when it changes.
+const API_BASE_URL =
+  import.meta.env.VITE_LOCAL_SERVER_URL || 'http://192.168.29.42:3001';
 
 export interface CloudUserProfile {
   userId: string;
