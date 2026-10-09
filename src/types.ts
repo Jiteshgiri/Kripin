@@ -59,15 +59,6 @@ export const INITIAL_USER_PROFILE: UserProfile = {
   avatarUrl: '',
 };
 
-export interface SmsAlert {
-  id: string;
-  rawText: string;
-  amount: number;
-  merchant: string;
-  isIncome: boolean;
-  category: string;
-  timestamp: number;
-}
 
 export interface CategoryOption {
   id: string;

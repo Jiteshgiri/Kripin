@@ -1,6 +1,6 @@
 import logo from "../assets/images/Kripin.png";
 import React from 'react';
-import { Wallet, Settings, MessageSquareCode, User, Sun, Moon } from 'lucide-react';
+import { Wallet, Settings, User, Sun, Moon } from 'lucide-react';
 import { BudgetConfig, UserProfile } from '../types';
 
 interface HeaderProps {
@@ -8,7 +8,6 @@ interface HeaderProps {
   userProfile: UserProfile;
   onOpenBudgetSettings: () => void;
   onOpenUserProfile: () => void;
-  onOpenSmsSimulator: () => void;
   isDarkMode: boolean;
   onToggleTheme: () => void;
   onOpenAbout: () => void;
@@ -19,7 +18,6 @@ export const Header: React.FC<HeaderProps> = ({
   userProfile,
   onOpenBudgetSettings,
   onOpenUserProfile,
-  onOpenSmsSimulator,
   isDarkMode,
   onToggleTheme,
   onOpenAbout,
@@ -79,20 +77,6 @@ export const Header: React.FC<HeaderProps> = ({
             title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
           >
             {isDarkMode ? <Sun className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> : <Moon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />}
-          </button>
-
-          <button
-            onClick={onOpenSmsSimulator}
-            className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-semibold rounded-xl border transition-colors ${
-              isDarkMode
-                ? 'bg-indigo-500/10 text-indigo-300 border-indigo-500/30 hover:bg-indigo-500/20'
-                : 'bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100'
-            }`}
-            title="Simulate SMS Bank Notification"
-          >
-            <MessageSquareCode className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">SMS Parser</span>
-            <span className="sm:hidden">SMS</span>
           </button>
 
           {/* Budget Settings Button */}

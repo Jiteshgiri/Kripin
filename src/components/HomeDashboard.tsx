@@ -8,9 +8,6 @@ import {
   TrendingDown,
   TrendingUp,
   Wallet,
-  Check,
-  X,
-  MessageSquare,
   Pencil,
   Utensils,
   ShoppingBag,
@@ -23,7 +20,7 @@ import {
   Package,
 } from 'lucide-react';
 import type jsPDF from 'jspdf';
-import { Expense, SmsAlert, CATEGORIES, UserProfile, BudgetConfig, DEFAULT_CATEGORY_BUDGETS } from '../types';
+import { Expense, CATEGORIES, UserProfile, BudgetConfig, DEFAULT_CATEGORY_BUDGETS } from '../types';
 import type { PdfTransactionItem } from '../utils/pdfGenerator';
 import { calculateCategoryStatuses } from '../utils/budgetUtils';
 import { ColorfulMonthPicker } from './ColorfulMonthPicker';
@@ -31,16 +28,12 @@ import { PdfPreviewModal } from './PdfPreviewModal';
 
 interface HomeDashboardProps {
   expenses: Expense[];
-  unconfirmedSmsAlerts: SmsAlert[];
   userProfile: UserProfile;
   budgetConfig: BudgetConfig;
   onOpenQuickAdd: () => void;
-  onOpenSmsSimulator: () => void;
   onOpenUserProfile: () => void;
   onOpenBudgetSettings: () => void;
   onOpenCalculator?: () => void;
-  onConfirmSmsAlert: (alert: SmsAlert, category: string) => void;
-  onDismissSmsAlert: (alert: SmsAlert) => void;
   onEditExpense: (expense: Expense) => void;
   onDeleteExpense: (id: string) => void;
   isDarkMode: boolean;
@@ -48,15 +41,11 @@ interface HomeDashboardProps {
 
 export const HomeDashboard: React.FC<HomeDashboardProps> = ({
   expenses,
-  unconfirmedSmsAlerts,
   userProfile,
   budgetConfig,
   onOpenQuickAdd,
-  onOpenSmsSimulator,
   onOpenUserProfile,
   onOpenBudgetSettings,
-  onConfirmSmsAlert,
-  onDismissSmsAlert,
   onEditExpense,
   onDeleteExpense,
   isDarkMode,
@@ -372,63 +361,6 @@ useEffect(() => {
           <Plus className="w-4 h-4" />
           <span>Add</span>
           </button>
-
-      {/* SMS Bank Alerts Banner if any */}
-      {unconfirmedSmsAlerts.length > 0 && (
-        <div className="space-y-2">
-          <div className="flex items-center justify-between px-1">
-            <span className={`text-xs font-bold flex items-center gap-1.5 ${
-              isDarkMode ? 'text-slate-300' : 'text-slate-700'
-            }`}>
-              <MessageSquare className="w-3.5 h-3.5 text-indigo-500" />
-              Auto SMS Transaction Detected
-            </span>
-            <button
-              onClick={onOpenSmsSimulator}
-              className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"
-            >
-              Test SMS Parser
-            </button>
-          </div>
-
-          {unconfirmedSmsAlerts.map((alert) => (
-            <div
-              key={alert.id}
-              className={`rounded-2xl p-3 border shadow-sm flex items-center justify-between gap-3 ${
-                isDarkMode
-                  ? 'bg-indigo-950/40 border-indigo-500/30'
-                  : 'bg-indigo-50/80 border-indigo-200'
-              }`}
-            >
-              <div className="space-y-0.5">
-                <p className={`text-xs font-semibold ${isDarkMode ? 'text-indigo-200' : 'text-indigo-900'}`}>
-                  Spent <strong>₹{alert.amount}</strong> at{' '}
-                  <strong>{alert.merchant || 'Bank Transaction'}</strong>
-                </p>
-                <p className={`text-[11px] ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>{alert.category}</p>
-              </div>
-
-              <div className="flex items-center gap-1.5 shrink-0">
-                <button
-                  onClick={() => onConfirmSmsAlert(alert, alert.category)}
-                  className="px-2.5 py-1.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-lg text-xs font-bold flex items-center gap-1 transition-colors"
-                >
-                  <Check className="w-3.5 h-3.5" />
-                  Confirm
-                </button>
-                <button
-                  onClick={() => onDismissSmsAlert(alert)}
-                  className={`p-1.5 rounded-lg transition-colors ${
-                    isDarkMode ? 'bg-slate-800 text-slate-400 hover:text-white' : 'bg-slate-200 text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
 
       {/* 3. Chronological Transactions History */}
       <div className="space-y-3 pt-1">

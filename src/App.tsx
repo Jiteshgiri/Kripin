@@ -15,10 +15,9 @@ const AnalyticsView = lazy(() => import('./components/AnalyticsView').then(m => 
 const RecurringBillsView = lazy(() => import('./components/RecurringBillsView').then(m => ({ default: m.RecurringBillsView })));
 const QuickAddModal = lazy(() => import('./components/QuickAddModal').then(m => ({ default: m.QuickAddModal })));
 const MiniCalculator = lazy(() => import('./components/MiniCalculator').then(m => ({ default: m.MiniCalculator })));
-const SmsSimulatorModal = lazy(() => import('./components/SmsSimulatorModal').then(m => ({ default: m.SmsSimulatorModal })));
 const BudgetSettingsModal = lazy(() => import('./components/BudgetSettingsModal').then(m => ({ default: m.BudgetSettingsModal })));
 const UserProfileModal = lazy(() => import('./components/UserProfileModal').then(m => ({ default: m.UserProfileModal })));
-import { Expense, RecurringBill, BudgetConfig, SmsAlert, UserProfile, INITIAL_USER_PROFILE, DEFAULT_CATEGORY_BUDGETS } from './types';
+import { Expense, RecurringBill, BudgetConfig, UserProfile, INITIAL_USER_PROFILE, DEFAULT_CATEGORY_BUDGETS } from './types';
 
 
 // Initial Seed Data (Empty for clean user entry)
@@ -112,12 +111,9 @@ const [isFirstTimeSetup, setIsFirstTimeSetup] = useState(() => {
     }
   });
 
-  const [unconfirmedSmsAlerts, setUnconfirmedSmsAlerts] = useState<SmsAlert[]>([]);
-
   // Modals state
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
-  const [isSmsSimulatorOpen, setIsSmsSimulatorOpen] = useState(false);
   const [isBudgetSettingsOpen, setIsBudgetSettingsOpen] = useState(false);
   const [isUserProfileOpen, setIsUserProfileOpen] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
@@ -234,19 +230,6 @@ void syncTransaction({
     setExpenses((prev) => prev.filter((e) => e.id !== id));
   };
 
-  // SMS Handlers
-  const handleConfirmSmsAlert = (alert: SmsAlert, category: string) => {
-    handleSaveExpense(alert.amount, alert.merchant || alert.category, category, alert.isIncome, alert.timestamp);
-    handleDismissSmsAlert(alert);
-  };
-
-  const handleDismissSmsAlert = (alert: SmsAlert) => {
-    setUnconfirmedSmsAlerts((prev) => prev.filter((a) => a.id !== alert.id));
-  };
-
-  const handleAddSmsAlertFromSimulator = (alert: SmsAlert) => {
-    setUnconfirmedSmsAlerts((prev) => [alert, ...prev]);
-  };
 
   // Recurring Bill Handlers
   const handleToggleBillPaid = (bill: RecurringBill) => {
@@ -328,7 +311,6 @@ return (
           userProfile={userProfile}
           onOpenBudgetSettings={() => setIsBudgetSettingsOpen(true)}
           onOpenUserProfile={() => setIsUserProfileOpen(true)}
-          onOpenSmsSimulator={() => setIsSmsSimulatorOpen(true)}
           onOpenAbout={() => setIsAboutOpen(true)}
           isDarkMode={isDarkMode}
           onToggleTheme={() => setIsDarkMode(!isDarkMode)}
@@ -339,19 +321,15 @@ return (
             {activeTab === 'home' && (
               <HomeDashboard
                 expenses={expenses}
-                unconfirmedSmsAlerts={unconfirmedSmsAlerts}
                 userProfile={userProfile}
                 budgetConfig={budgetConfig}
                 onOpenQuickAdd={handleOpenAddModal}
-                onOpenSmsSimulator={() => setIsSmsSimulatorOpen(true)}
                 onOpenUserProfile={() => setIsUserProfileOpen(true)}
                 onOpenBudgetSettings={() => setIsBudgetSettingsOpen(true)}
                 onOpenCalculator={() => {
                   setIsCalculatorOpen(true);
                   setIsCalculatorMinimized(false);
                 }}
-                onConfirmSmsAlert={handleConfirmSmsAlert}
-                onDismissSmsAlert={handleDismissSmsAlert}
                 onEditExpense={handleOpenEditModal}
                 onDeleteExpense={handleDeleteExpense}
                 isDarkMode={isDarkMode}
@@ -484,13 +462,6 @@ return (
         }}
         onSave={handleSaveExpense}
         onDelete={handleDeleteExpense}
-        isDarkMode={isDarkMode}
-      />
-
-      <SmsSimulatorModal
-        isOpen={isSmsSimulatorOpen}
-        onClose={() => setIsSmsSimulatorOpen(false)}
-        onAddAlert={handleAddSmsAlertFromSimulator}
         isDarkMode={isDarkMode}
       />
 
